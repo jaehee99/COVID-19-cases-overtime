@@ -1,0 +1,160 @@
+---
+title: "STAT 413/613: HW on List Columns and  COVID19"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 4
+    number_sections: yes
+    theme: cerulean
+  pdf_document:
+    toc: yes
+    number_sections: yes
+    toc_depth: '4'
+params:
+  solutions: FALSE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.align  = "center",
+                      fig.height = 5, 
+                      fig.width  = 6)
+```
+
+# Instructions {-}
+1. Clone this homework repo to your homework directory as a new repo.
+2. Rename the starter file under the analysis directory as `hw_01_yourname.Rmd` and use it for your solutions.   
+3. Modify the "author" field in the YAML header.  
+4. Stage and Commit R Markdown and HTML files (no PDF files).   
+5. **Push both .Rmd and HTML files to GitHub**.   
+- Make sure you have knitted to HTML prior to staging, committing, and pushing your final submission.  
+6. **Commit each time you answer a part of question, e.g. 1.1**   
+7. **Push to GitHub after each major question**   
+8. When complete, submit a response in Canvas   
+    
+- Only include necessary code to answer the questions.
+- Most of the functions you use should be from the tidyverse. Unnecessary Base R or other packages not covered in class will result in point deductions.
+- Use Pull requests and or email to ask me any questions. If you email, please ensure your most recent code is pushed to GitHub.  
+
+- **Learning Outcome**
+  + Use tidyverse functions to create, clean, tidy, and manipulate data frames in a list column
+  + Apply purrr functions when working with list columns
+  + Employ joins to manipulate data from multiple data frames  
+
+- **Context** 
+  + This assignment looks at COVID-19 data based on the most recent data as of the date you do the work.
+
+
+# Load global and US confirmed cases and deaths data into a nested data frame
+1. Create a variable called `url_in` to store this URL: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/". This allows you do directly download the files at the John's Hopkins site:  "https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"
+2. Create a tibble named `df` with a variable called `file_names` with a row for each of the following four file names to be loaded from the URL:
+    + time_series_covid19_confirmed_global.cs
+    + time_series_covid19_deaths_global.csv
+    + time_series_covid19_confirmed_US.csv
+    + time_series_covid19_deaths_US.csv
+3. Create a variable in the data frame called `url` that puts `url_in` on the front of each file_name to create a complete URL.
+4. Use `mutate()` with `map()` to create a list column called `data` with each row holding the downloaded data frame for each file name
+5. Add a factor variable to `df` called `"`case_type`"` with the **unique** portions of the file names.
+6. Remove any columns other than `case_types` and `data` from `df`.
+- `df` should have four observations of two variables.
+
+ 
+
+# Clean Data  
+1. Using a single call to `map()`, add only the first 15 names from each of the four data frames to a new variable in `df` called `vars`.
+ - Visually compare them to identify issues across the rows.
+ 
+
+2. Use a purrr function for each of the following steps (except a) to fix any issues and create consistent data frames.  
+a. Create a short helper function called `fix_names()` which takes three arguments: a data frame, a string pattern, and a string "replacement pattern". It should replace all occurrences of the "string pattern" in the names of the variables in the data frame with the "replacement pattern". Include error checking to ensure the inputs are of the proper class.
+b. Use your function with `map()` to convert "Province/State" and "Country/Region" to "Province_State" "Country_Region" .
+c. Use your function with `map()` to convert "Admin2 to "County" and "Long_" to "Long".
+d. Use a purrr function to remove the variables "UID", "iso2", "iso3", "code3", "FIPS", and "Combined_Key" from only the US data.
+e. Use a purrr function to add variables `Population` and `County` to the data frames where missing.
+f. Use a purrr function to add variable called `Country_State` that combines the country with the province/state while keeping the original columns.
+g. Update the values in `df$vars` with the new first 15 names and show the values to check for consistency in each pair of rows.
+- Hint: Look at help for `map_if()`
+
+
+# Tidy each dataframe 
+1. Use `map()` along with `pivot_longer()` to tidy each data frame.
+- As part of the pivot, ensure the daily values are in a variable called "`Date`" and use a lubridate function *inside the pivot* to ensure it is of class `date`.
+2. Save the new data frame to a variable called `df_long`
+
+
+# Add Continents 
+1.  Use `map()` to add a new variable called `Continent` to each data frame.  
+- Hint: use the package {countrycode} to get the continents.
+- If you don't have it already, use the console to install. 
+- Then load package {countrycode} and look at help for `countrycode::countrycode`
+- You will get some warning messages about NAs which you will fix next.
+
+
+# Fix NAs for Continents
+- Use `map()` with `case_when()` to replace the NAs due to "Diamond Princess", "Kosovo", "MS Zaandam" and Micronesia, with the most appropriate continent
+- Use `map()` with `unique()` to confirm five continents in the global data frames and one in the US data frames
+
+# Unnest the Data Frames    
+1. Unnest and ungroup the data frame `df_long` and save into a new data frame called `df_all`
+2. Remove original `df` and `df_long` dataframes from the environment
+3. Remove the `vars` variable from df_all
+
+
+# Get World Population Data
+1.a.  Use a readr function and relative path to read in the .csv with World population data for 2019 into its own data frame called `df_pop`.  
+
+  - The data is from the [UN](https://population.un.org/wpp/Download/Standard/CSV/) which uses different country names in many cases from the COVID data. It also uses a different structure for separating countries and territories.  
+  - The CSV has been adjusted to match the COVID data country names in many cases, e.g., US, and Iran.  
+  - Note: the UN population data is in thousands so it can have fractional values. 
+  
+1.b. Identify the countries in the Covid data that are not in the population data.  
+1.c. Identify the countries in the population data that are not in the covid data. How many are there?  
+1.d. What is the percentage of the world population contained in these countries? 
+
+  - Since the percentage is small, we will remove them from the subsequent analysis.
+
+2. Use a dplyr join to remove all Locations that are not in the `df_all` data frame.
+3. Use a dplyr function to add the ranks for each location for population and population density to `df_pop` where the country with the largest value is number 1 for that variables. Show the top 10 countries for Population and for population density.
+  + Calculate the ranks using a method where if `n` countries are tied at the same rank, the next rank is `n` greater than the rank with if the ties. As an example, if two countries are tied at 2, the next non-tied country has rank 4.
+
+
+4. Create an appropriate plot and then test to assess if there is a linear relationship between ranks for Total Population and Population Density. Interpret the plot and interpret the output from the model in terms of `$p$` value and adjusted R-squared.
+
+# Add Population Data to `df_all`
+- Use a dplyr join to add the data from `df_pop` to `df_all` to create `df_allp`
+- This means there will be two columns with population data:
+  + `Population` for US Counties
+  + `PopTotal` for the country level
+  
+
+# How many Country Regions have Multiple Country States?
+- Calculate the number of Country States for each Country Region
+- Show in descending order of the number of Country_States by Country_Region.
+
+# Analyse Data
+1. Create a data frame by with data grouped by `Country_Region`, `Continent` `case_type`, `rank_p` and `rank_d` that summarizes the current totals and the totals as a percentage of total population.
+  - Be sure to look at how the data is reported so the numbers make sense.
+2. What are the 20 Countries with the most confirmed cases and what is the percentage of their total population affected?
+3. What are the 20 Countries with the most deaths and what is the percentage of their total population affected?
+4. Describe the results based on the totals with the rankings for total population and population density.
+
+
+
+# Which countries in the top 20 for percentage of population for cases are Not in the top 20 for the absolute number of cases.  Which countries in the top 20 for percentage of population for deaths are Not in the top 20 for the absolute number deaths?
+- Describe the results based on the per population results with the rankings for total population and population density.
+
+
+# Create two plots, one for the number of cases and one for the number of deaths over time for the top 20 country/region showing each country and faceting by continent with the same scale for the y axis. 
+- Use appropriate scales for the axes.
+- Create two sets of plots
+- Interpret each plot with respect to the total cases/deaths and the path of cases/deaths across different continents.
+
+
+# Analyze US States Deaths **Extra Credit**
+
+1. Create a data frame with the total deaths and deaths per population for those US states with more than 0 deaths and more than 0 population.
+2. Use an appropriate plot to assess for a linear relationship between total deaths and deaths per population using log scales for x and y axes. Interpret the plot.
+3. Run a linear model to test for a linear relationship and interpret the results in terms of p value, adjusted R-squared and a plot of the residuals.
+
+
