@@ -1,6 +1,6 @@
 ---
 title: "STAT 413/613: HW on List Columns and  COVID19"
-author: "Your Name"
+author: "Jaehee Lee"
 date: "`r Sys.Date()`"
 output:
   html_document:
