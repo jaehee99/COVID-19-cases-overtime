@@ -51,6 +51,12 @@ library(tidyverse)
 ```
 
 
+# Load global and US confirmed cases and deaths data into a nested data frame
+1. Create a variable called `url_in` to store this URL: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/". This allows you do directly download the files at the John's Hopkins site:  "https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"
+```{r}
+url_in <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/"
+```
+
 
  
 
