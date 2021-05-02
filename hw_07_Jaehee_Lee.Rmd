@@ -70,10 +70,15 @@ df <- tibble(
   'time_series_covid19_confirmed_US.csv',
   'time_series_covid19_deaths_US.csv')
 )
+df
 ```
 
-
- 
+3. Create a variable in the data frame called `url` that puts `url_in` on the front of each file_name to create a complete URL.
+```{r}
+df %>%  
+  mutate(url = str_c(url_in, file_names, sep = '')) -> df
+df
+```
 
 
 

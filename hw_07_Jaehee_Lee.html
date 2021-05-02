@@ -249,7 +249,28 @@ pre code {
   &#39;time_series_covid19_deaths_global.csv&#39;,
   &#39;time_series_covid19_confirmed_US.csv&#39;,
   &#39;time_series_covid19_deaths_US.csv&#39;)
-)</code></pre>
+)
+df</code></pre>
+<pre><code>## # A tibble: 4 x 1
+##   file_names                              
+##   &lt;chr&gt;                                   
+## 1 time_series_covid19_confirmed_global.csv
+## 2 time_series_covid19_deaths_global.csv   
+## 3 time_series_covid19_confirmed_US.csv    
+## 4 time_series_covid19_deaths_US.csv</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Create a variable in the data frame called <code>url</code> that puts <code>url_in</code> on the front of each file_name to create a complete URL.</li>
+</ol>
+<pre class="r"><code>df %&gt;%  
+  mutate(url = str_c(url_in, file_names, sep = &#39;&#39;)) -&gt; df
+df</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   file_names                    url                                             
+##   &lt;chr&gt;                         &lt;chr&gt;                                           
+## 1 time_series_covid19_confirme… https://raw.githubusercontent.com/CSSEGISandDat…
+## 2 time_series_covid19_deaths_g… https://raw.githubusercontent.com/CSSEGISandDat…
+## 3 time_series_covid19_confirme… https://raw.githubusercontent.com/CSSEGISandDat…
+## 4 time_series_covid19_deaths_U… https://raw.githubusercontent.com/CSSEGISandDat…</code></pre>
 </div>
 
 
