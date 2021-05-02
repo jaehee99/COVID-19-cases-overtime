@@ -45,6 +45,11 @@ knitr::opts_chunk$set(fig.align  = "center",
 - **Context** 
   + This assignment looks at COVID-19 data based on the most recent data as of the date you do the work.
 
+Load library
+```{r}
+library(tidyverse)
+```
+
 
 
  
