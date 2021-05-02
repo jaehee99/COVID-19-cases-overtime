@@ -174,7 +174,7 @@ pre code {
 <div id="TOC">
 <ul>
 <li><a href="#instructions">Instructions</a></li>
-<li><a href="#load-library"><span class="toc-section-number">1</span> Load library</a></li>
+<li><a href="#load-global-and-us-confirmed-cases-and-deaths-data-into-a-nested-data-frame"><span class="toc-section-number">1</span> Load global and US confirmed cases and deaths data into a nested data frame</a></li>
 </ul>
 </div>
 
@@ -217,9 +217,7 @@ pre code {
 <li>This assignment looks at COVID-19 data based on the most recent data as of the date you do the work.</li>
 </ul></li>
 </ul>
-</div>
-<div id="load-library" class="section level1" number="1">
-<h1 number="1"><span class="header-section-number">1</span> Load library</h1>
+<p>Load library</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
 <pre><code>## ✓ ggplot2 3.3.3     ✓ purrr   0.3.4
@@ -229,6 +227,29 @@ pre code {
 <pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
+</div>
+<div id="load-global-and-us-confirmed-cases-and-deaths-data-into-a-nested-data-frame" class="section level1" number="1">
+<h1 number="1"><span class="header-section-number">1</span> Load global and US confirmed cases and deaths data into a nested data frame</h1>
+<ol style="list-style-type: decimal">
+<li>Create a variable called <code>url_in</code> to store this URL: “<a href="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/" class="uri">https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/</a>”. This allows you do directly download the files at the John’s Hopkins site: “<a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series" class="uri">https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series</a>”</li>
+</ol>
+<pre class="r"><code>url_in &lt;- &quot;https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/&quot;</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Create a tibble named <code>df</code> with a variable called <code>file_names</code> with a row for each of the following four file names to be loaded from the URL:
+<ul>
+<li>time_series_covid19_confirmed_global.csv</li>
+<li>time_series_covid19_deaths_global.csv</li>
+<li>time_series_covid19_confirmed_US.csv</li>
+<li>time_series_covid19_deaths_US.csv</li>
+</ul></li>
+</ol>
+<pre class="r"><code>df &lt;- tibble(
+ file_names = 
+   c(&#39;time_series_covid19_confirmed_global.csv&#39;, 
+  &#39;time_series_covid19_deaths_global.csv&#39;,
+  &#39;time_series_covid19_confirmed_US.csv&#39;,
+  &#39;time_series_covid19_deaths_US.csv&#39;)
+)</code></pre>
 </div>
 
 

@@ -57,6 +57,21 @@ library(tidyverse)
 url_in <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/"
 ```
 
+2. Create a tibble named `df` with a variable called `file_names` with a row for each of the following four file names to be loaded from the URL:
+    + time_series_covid19_confirmed_global.csv
+    + time_series_covid19_deaths_global.csv
+    + time_series_covid19_confirmed_US.csv
+    + time_series_covid19_deaths_US.csv
+```{r}
+df <- tibble(
+ file_names = 
+   c('time_series_covid19_confirmed_global.csv', 
+  'time_series_covid19_deaths_global.csv',
+  'time_series_covid19_confirmed_US.csv',
+  'time_series_covid19_deaths_US.csv')
+)
+```
+
 
  
 
