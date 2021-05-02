@@ -11,7 +11,7 @@
 
 <meta name="author" content="Jaehee Lee" />
 
-<meta name="date" content="2021-04-16" />
+<meta name="date" content="2021-05-03" />
 
 <title>STAT 413/613: HW on List Columns and COVID19</title>
 
@@ -167,26 +167,13 @@ pre code {
 
 <h1 class="title toc-ignore">STAT 413/613: HW on List Columns and COVID19</h1>
 <h4 class="author">Jaehee Lee</h4>
-<h4 class="date">2021-04-16</h4>
+<h4 class="date">2021-05-03</h4>
 
 </div>
 
 <div id="TOC">
 <ul>
 <li><a href="#instructions">Instructions</a></li>
-<li><a href="#load-global-and-us-confirmed-cases-and-deaths-data-into-a-nested-data-frame"><span class="toc-section-number">1</span> Load global and US confirmed cases and deaths data into a nested data frame</a></li>
-<li><a href="#clean-data"><span class="toc-section-number">2</span> Clean Data</a></li>
-<li><a href="#tidy-each-dataframe"><span class="toc-section-number">3</span> Tidy each dataframe</a></li>
-<li><a href="#add-continents"><span class="toc-section-number">4</span> Add Continents</a></li>
-<li><a href="#fix-nas-for-continents"><span class="toc-section-number">5</span> Fix NAs for Continents</a></li>
-<li><a href="#unnest-the-data-frames"><span class="toc-section-number">6</span> Unnest the Data Frames</a></li>
-<li><a href="#get-world-population-data"><span class="toc-section-number">7</span> Get World Population Data</a></li>
-<li><a href="#add-population-data-to-df_all"><span class="toc-section-number">8</span> Add Population Data to <code>df_all</code></a></li>
-<li><a href="#how-many-country-regions-have-multiple-country-states"><span class="toc-section-number">9</span> How many Country Regions have Multiple Country States?</a></li>
-<li><a href="#analyse-data"><span class="toc-section-number">10</span> Analyse Data</a></li>
-<li><a href="#which-countries-in-the-top-20-for-percentage-of-population-for-cases-are-not-in-the-top-20-for-the-absolute-number-of-cases.-which-countries-in-the-top-20-for-percentage-of-population-for-deaths-are-not-in-the-top-20-for-the-absolute-number-deaths"><span class="toc-section-number">11</span> Which countries in the top 20 for percentage of population for cases are Not in the top 20 for the absolute number of cases. Which countries in the top 20 for percentage of population for deaths are Not in the top 20 for the absolute number deaths?</a></li>
-<li><a href="#create-two-plots-one-for-the-number-of-cases-and-one-for-the-number-of-deaths-over-time-for-the-top-20-countryregion-showing-each-country-and-faceting-by-continent-with-the-same-scale-for-the-y-axis."><span class="toc-section-number">12</span> Create two plots, one for the number of cases and one for the number of deaths over time for the top 20 country/region showing each country and faceting by continent with the same scale for the y axis.</a></li>
-<li><a href="#analyze-us-states-deaths-extra-credit"><span class="toc-section-number">13</span> Analyze US States Deaths <strong>Extra Credit</strong></a></li>
 </ul>
 </div>
 
@@ -229,172 +216,6 @@ pre code {
 <li>This assignment looks at COVID-19 data based on the most recent data as of the date you do the work.</li>
 </ul></li>
 </ul>
-</div>
-<div id="load-global-and-us-confirmed-cases-and-deaths-data-into-a-nested-data-frame" class="section level1" number="1">
-<h1 number="1"><span class="header-section-number">1</span> Load global and US confirmed cases and deaths data into a nested data frame</h1>
-<ol style="list-style-type: decimal">
-<li>Create a variable called <code>url_in</code> to store this URL: “<a href="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/" class="uri">https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/</a>”. This allows you do directly download the files at the John’s Hopkins site: “<a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series" class="uri">https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series</a>”</li>
-<li>Create a tibble named <code>df</code> with a variable called <code>file_names</code> with a row for each of the following four file names to be loaded from the URL:
-<ul>
-<li>time_series_covid19_confirmed_global.cs</li>
-<li>time_series_covid19_deaths_global.csv</li>
-<li>time_series_covid19_confirmed_US.csv</li>
-<li>time_series_covid19_deaths_US.csv</li>
-</ul></li>
-<li>Create a variable in the data frame called <code>url</code> that puts <code>url_in</code> on the front of each file_name to create a complete URL.</li>
-<li>Use <code>mutate()</code> with <code>map()</code> to create a list column called <code>data</code> with each row holding the downloaded data frame for each file name</li>
-<li>Add a factor variable to <code>df</code> called <code>&quot;</code>case_type<code>&quot;</code> with the <strong>unique</strong> portions of the file names.</li>
-<li>Remove any columns other than <code>case_types</code> and <code>data</code> from <code>df</code>.</li>
-</ol>
-<ul>
-<li><code>df</code> should have four observations of two variables.</li>
-</ul>
-</div>
-<div id="clean-data" class="section level1" number="2">
-<h1 number="2"><span class="header-section-number">2</span> Clean Data</h1>
-<ol style="list-style-type: decimal">
-<li>Using a single call to <code>map()</code>, add only the first 15 names from each of the four data frames to a new variable in <code>df</code> called <code>vars</code>.</li>
-</ol>
-<ul>
-<li>Visually compare them to identify issues across the rows.</li>
-</ul>
-<ol start="2" style="list-style-type: decimal">
-<li>Use a purrr function for each of the following steps (except a) to fix any issues and create consistent data frames.<br />
-</li>
-</ol>
-<ol style="list-style-type: lower-alpha">
-<li>Create a short helper function called <code>fix_names()</code> which takes three arguments: a data frame, a string pattern, and a string “replacement pattern”. It should replace all occurrences of the “string pattern” in the names of the variables in the data frame with the “replacement pattern”. Include error checking to ensure the inputs are of the proper class.</li>
-<li>Use your function with <code>map()</code> to convert “Province/State” and “Country/Region” to “Province_State” “Country_Region” .</li>
-<li>Use your function with <code>map()</code> to convert “Admin2 to”County&quot; and “Long_” to “Long”.</li>
-<li>Use a purrr function to remove the variables “UID”, “iso2”, “iso3”, “code3”, “FIPS”, and “Combined_Key” from only the US data.</li>
-<li>Use a purrr function to add variables <code>Population</code> and <code>County</code> to the data frames where missing.</li>
-<li>Use a purrr function to add variable called <code>Country_State</code> that combines the country with the province/state while keeping the original columns.</li>
-<li>Update the values in <code>df$vars</code> with the new first 15 names and show the values to check for consistency in each pair of rows.</li>
-</ol>
-<ul>
-<li>Hint: Look at help for <code>map_if()</code></li>
-</ul>
-</div>
-<div id="tidy-each-dataframe" class="section level1" number="3">
-<h1 number="3"><span class="header-section-number">3</span> Tidy each dataframe</h1>
-<ol style="list-style-type: decimal">
-<li>Use <code>map()</code> along with <code>pivot_longer()</code> to tidy each data frame.</li>
-</ol>
-<ul>
-<li>As part of the pivot, ensure the daily values are in a variable called “<code>Date</code>” and use a lubridate function <em>inside the pivot</em> to ensure it is of class <code>date</code>.</li>
-</ul>
-<ol start="2" style="list-style-type: decimal">
-<li>Save the new data frame to a variable called <code>df_long</code></li>
-</ol>
-</div>
-<div id="add-continents" class="section level1" number="4">
-<h1 number="4"><span class="header-section-number">4</span> Add Continents</h1>
-<ol style="list-style-type: decimal">
-<li>Use <code>map()</code> to add a new variable called <code>Continent</code> to each data frame.<br />
-</li>
-</ol>
-<ul>
-<li>Hint: use the package {countrycode} to get the continents.</li>
-<li>If you don’t have it already, use the console to install.</li>
-<li>Then load package {countrycode} and look at help for <code>countrycode::countrycode</code></li>
-<li>You will get some warning messages about NAs which you will fix next.</li>
-</ul>
-</div>
-<div id="fix-nas-for-continents" class="section level1" number="5">
-<h1 number="5"><span class="header-section-number">5</span> Fix NAs for Continents</h1>
-<ul>
-<li>Use <code>map()</code> with <code>case_when()</code> to replace the NAs due to “Diamond Princess”, “Kosovo”, “MS Zaandam” and Micronesia, with the most appropriate continent</li>
-<li>Use <code>map()</code> with <code>unique()</code> to confirm five continents in the global data frames and one in the US data frames</li>
-</ul>
-</div>
-<div id="unnest-the-data-frames" class="section level1" number="6">
-<h1 number="6"><span class="header-section-number">6</span> Unnest the Data Frames</h1>
-<ol style="list-style-type: decimal">
-<li>Unnest and ungroup the data frame <code>df_long</code> and save into a new data frame called <code>df_all</code></li>
-<li>Remove original <code>df</code> and <code>df_long</code> dataframes from the environment</li>
-<li>Remove the <code>vars</code> variable from df_all</li>
-</ol>
-</div>
-<div id="get-world-population-data" class="section level1" number="7">
-<h1 number="7"><span class="header-section-number">7</span> Get World Population Data</h1>
-<p>1.a. Use a readr function and relative path to read in the .csv with World population data for 2019 into its own data frame called <code>df_pop</code>.</p>
-<ul>
-<li>The data is from the <a href="https://population.un.org/wpp/Download/Standard/CSV/">UN</a> which uses different country names in many cases from the COVID data. It also uses a different structure for separating countries and territories.<br />
-</li>
-<li>The CSV has been adjusted to match the COVID data country names in many cases, e.g., US, and Iran.<br />
-</li>
-<li>Note: the UN population data is in thousands so it can have fractional values.</li>
-</ul>
-<p>1.b. Identify the countries in the Covid data that are not in the population data.<br />
-1.c. Identify the countries in the population data that are not in the covid data. How many are there?<br />
-1.d. What is the percentage of the world population contained in these countries?</p>
-<ul>
-<li>Since the percentage is small, we will remove them from the subsequent analysis.</li>
-</ul>
-<ol start="2" style="list-style-type: decimal">
-<li>Use a dplyr join to remove all Locations that are not in the <code>df_all</code> data frame.</li>
-<li>Use a dplyr function to add the ranks for each location for population and population density to <code>df_pop</code> where the country with the largest value is number 1 for that variables. Show the top 10 countries for Population and for population density.</li>
-</ol>
-<ul>
-<li>Calculate the ranks using a method where if <code>n</code> countries are tied at the same rank, the next rank is <code>n</code> greater than the rank with if the ties. As an example, if two countries are tied at 2, the next non-tied country has rank 4.</li>
-</ul>
-<ol start="4" style="list-style-type: decimal">
-<li>Create an appropriate plot and then test to assess if there is a linear relationship between ranks for Total Population and Population Density. Interpret the plot and interpret the output from the model in terms of <code>$p$</code> value and adjusted R-squared.</li>
-</ol>
-</div>
-<div id="add-population-data-to-df_all" class="section level1" number="8">
-<h1 number="8"><span class="header-section-number">8</span> Add Population Data to <code>df_all</code></h1>
-<ul>
-<li>Use a dplyr join to add the data from <code>df_pop</code> to <code>df_all</code> to create <code>df_allp</code></li>
-<li>This means there will be two columns with population data:
-<ul>
-<li><code>Population</code> for US Counties</li>
-<li><code>PopTotal</code> for the country level</li>
-</ul></li>
-</ul>
-</div>
-<div id="how-many-country-regions-have-multiple-country-states" class="section level1" number="9">
-<h1 number="9"><span class="header-section-number">9</span> How many Country Regions have Multiple Country States?</h1>
-<ul>
-<li>Calculate the number of Country States for each Country Region</li>
-<li>Show in descending order of the number of Country_States by Country_Region.</li>
-</ul>
-</div>
-<div id="analyse-data" class="section level1" number="10">
-<h1 number="10"><span class="header-section-number">10</span> Analyse Data</h1>
-<ol style="list-style-type: decimal">
-<li>Create a data frame by with data grouped by <code>Country_Region</code>, <code>Continent</code> <code>case_type</code>, <code>rank_p</code> and <code>rank_d</code> that summarizes the current totals and the totals as a percentage of total population.</li>
-</ol>
-<ul>
-<li>Be sure to look at how the data is reported so the numbers make sense.</li>
-</ul>
-<ol start="2" style="list-style-type: decimal">
-<li>What are the 20 Countries with the most confirmed cases and what is the percentage of their total population affected?</li>
-<li>What are the 20 Countries with the most deaths and what is the percentage of their total population affected?</li>
-<li>Describe the results based on the totals with the rankings for total population and population density.</li>
-</ol>
-</div>
-<div id="which-countries-in-the-top-20-for-percentage-of-population-for-cases-are-not-in-the-top-20-for-the-absolute-number-of-cases.-which-countries-in-the-top-20-for-percentage-of-population-for-deaths-are-not-in-the-top-20-for-the-absolute-number-deaths" class="section level1" number="11">
-<h1 number="11"><span class="header-section-number">11</span> Which countries in the top 20 for percentage of population for cases are Not in the top 20 for the absolute number of cases. Which countries in the top 20 for percentage of population for deaths are Not in the top 20 for the absolute number deaths?</h1>
-<ul>
-<li>Describe the results based on the per population results with the rankings for total population and population density.</li>
-</ul>
-</div>
-<div id="create-two-plots-one-for-the-number-of-cases-and-one-for-the-number-of-deaths-over-time-for-the-top-20-countryregion-showing-each-country-and-faceting-by-continent-with-the-same-scale-for-the-y-axis." class="section level1" number="12">
-<h1 number="12"><span class="header-section-number">12</span> Create two plots, one for the number of cases and one for the number of deaths over time for the top 20 country/region showing each country and faceting by continent with the same scale for the y axis.</h1>
-<ul>
-<li>Use appropriate scales for the axes.</li>
-<li>Create two sets of plots</li>
-<li>Interpret each plot with respect to the total cases/deaths and the path of cases/deaths across different continents.</li>
-</ul>
-</div>
-<div id="analyze-us-states-deaths-extra-credit" class="section level1" number="13">
-<h1 number="13"><span class="header-section-number">13</span> Analyze US States Deaths <strong>Extra Credit</strong></h1>
-<ol style="list-style-type: decimal">
-<li>Create a data frame with the total deaths and deaths per population for those US states with more than 0 deaths and more than 0 population.</li>
-<li>Use an appropriate plot to assess for a linear relationship between total deaths and deaths per population using log scales for x and y axes. Interpret the plot.</li>
-<li>Run a linear model to test for a linear relationship and interpret the results in terms of p value, adjusted R-squared and a plot of the residuals.</li>
-</ol>
 </div>
 
 
