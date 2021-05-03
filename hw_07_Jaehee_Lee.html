@@ -175,6 +175,7 @@ pre code {
 <ul>
 <li><a href="#instructions">Instructions</a></li>
 <li><a href="#load-global-and-us-confirmed-cases-and-deaths-data-into-a-nested-data-frame"><span class="toc-section-number">1</span> Load global and US confirmed cases and deaths data into a nested data frame</a></li>
+<li><a href="#clean-data"><span class="toc-section-number">2</span> Clean Data</a></li>
 </ul>
 </div>
 
@@ -315,6 +316,41 @@ pre code {
 </ul>
 <pre class="r"><code>df %&gt;%  
   select(&quot;case_types&quot;, &quot;data&quot; ) -&gt; df</code></pre>
+</div>
+<div id="clean-data" class="section level1" number="2">
+<h1 number="2"><span class="header-section-number">2</span> Clean Data</h1>
+<ol style="list-style-type: decimal">
+<li>Using a single call to <code>map()</code>, add only the first 15 names from each of the four data frames to a new variable in <code>df</code> called <code>vars</code>.</li>
+</ol>
+<ul>
+<li>Visually compare them to identify issues across the rows.</li>
+</ul>
+<pre class="r"><code>df %&gt;%  
+  mutate(vars = map(df$data, names)) -&gt; df
+df %&gt;% 
+  mutate(vars = map(df$vars, ~unlist(.)[1:15]))</code></pre>
+<pre><code>## # A tibble: 4 x 3
+##   case_types       data                              vars      
+##   &lt;fct&gt;            &lt;list&gt;                            &lt;list&gt;    
+## 1 confirmed_global &lt;spec_tbl_df[,471] [275 × 471]&gt;   &lt;chr [15]&gt;
+## 2 deaths_global    &lt;spec_tbl_df[,471] [275 × 471]&gt;   &lt;chr [15]&gt;
+## 3 confirmed_US     &lt;spec_tbl_df[,478] [3,342 × 478]&gt; &lt;chr [15]&gt;
+## 4 deaths_US        &lt;spec_tbl_df[,479] [3,342 × 479]&gt; &lt;chr [15]&gt;</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Use a purrr function for each of the following steps (except a) to fix any issues and create consistent data frames.<br />
+</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li>Create a short helper function called <code>fix_names()</code> which takes three arguments: a data frame, a string pattern, and a string “replacement pattern”. It should replace all occurrences of the “string pattern” in the names of the variables in the data frame with the “replacement pattern”. Include error checking to ensure the inputs are of the proper class.</li>
+</ol>
+<pre class="r"><code>fix_names &lt;- function(dataframe, string_pattern, replacement_pattern) {
+  stopifnot(is.data.frame(dataframe))
+  stopifnot(is.character(string_pattern))
+  
+  names(dataframe) = str_replace_all(names(dataframe), string_pattern, replacement_pattern)
+  
+  return(dataframe)
+}</code></pre>
 </div>
 
 

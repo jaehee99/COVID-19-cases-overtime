@@ -96,6 +96,28 @@ df %>%
   select("case_types", "data" ) -> df
 ```
 
+# Clean Data  
+1. Using a single call to `map()`, add only the first 15 names from each of the four data frames to a new variable in `df` called `vars`.
+ - Visually compare them to identify issues across the rows.
+```{r}
+df %>%  
+  mutate(vars = map(df$data, names)) -> df
+df %>% 
+  mutate(vars = map(df$vars, ~unlist(.)[1:15]))
+```
+2. Use a purrr function for each of the following steps (except a) to fix any issues and create consistent data frames.  
+a. Create a short helper function called `fix_names()` which takes three arguments: a data frame, a string pattern, and a string "replacement pattern". It should replace all occurrences of the "string pattern" in the names of the variables in the data frame with the "replacement pattern". Include error checking to ensure the inputs are of the proper class.
+```{r}
+fix_names <- function(dataframe, string_pattern, replacement_pattern) {
+  stopifnot(is.data.frame(dataframe))
+  stopifnot(is.character(string_pattern))
+  
+  names(dataframe) = str_replace_all(names(dataframe), string_pattern, replacement_pattern)
+  
+  return(dataframe)
+}
+```
+
 
 
 
