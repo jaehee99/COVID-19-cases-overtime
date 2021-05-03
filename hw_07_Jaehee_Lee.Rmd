@@ -126,5 +126,12 @@ df %>%
 ```
 
 
+c. Use your function with `map()` to convert "Admin2 to "County" and "Long_" to "Long".
+```{r}
+df %>%  
+  mutate(data = map(data, ~fix_names(. , "Admin2", "County" ))) %>%  
+  mutate(data = map(data, ~fix_names(. , "Long_", "Long") ))-> df
+```
+
 
 
