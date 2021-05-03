@@ -249,28 +249,12 @@ pre code {
   &#39;time_series_covid19_deaths_global.csv&#39;,
   &#39;time_series_covid19_confirmed_US.csv&#39;,
   &#39;time_series_covid19_deaths_US.csv&#39;)
-)
-df</code></pre>
-<pre><code>## # A tibble: 4 x 1
-##   file_names                              
-##   &lt;chr&gt;                                   
-## 1 time_series_covid19_confirmed_global.csv
-## 2 time_series_covid19_deaths_global.csv   
-## 3 time_series_covid19_confirmed_US.csv    
-## 4 time_series_covid19_deaths_US.csv</code></pre>
+)</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>Create a variable in the data frame called <code>url</code> that puts <code>url_in</code> on the front of each file_name to create a complete URL.</li>
 </ol>
 <pre class="r"><code>df %&gt;%  
-  mutate(url = str_c(url_in, file_names, sep = &#39;&#39;)) -&gt; df
-df</code></pre>
-<pre><code>## # A tibble: 4 x 2
-##   file_names                    url                                             
-##   &lt;chr&gt;                         &lt;chr&gt;                                           
-## 1 time_series_covid19_confirme… https://raw.githubusercontent.com/CSSEGISandDat…
-## 2 time_series_covid19_deaths_g… https://raw.githubusercontent.com/CSSEGISandDat…
-## 3 time_series_covid19_confirme… https://raw.githubusercontent.com/CSSEGISandDat…
-## 4 time_series_covid19_deaths_U… https://raw.githubusercontent.com/CSSEGISandDat…</code></pre>
+  mutate(url = str_c(url_in, file_names, sep = &#39;&#39;)) -&gt; df</code></pre>
 <ol start="4" style="list-style-type: decimal">
 <li>Use <code>mutate()</code> with <code>map()</code> to create a list column called <code>data</code> with each row holding the downloaded data frame for each file name</li>
 </ol>
@@ -318,31 +302,19 @@ df</code></pre>
 ##   Combined_Key = col_character()
 ## )
 ## ℹ Use `spec()` for the full column specifications.</code></pre>
-<pre class="r"><code># check 
-df %&gt;%  
-  select(file_names, data)</code></pre>
-<pre><code>## # A tibble: 4 x 2
-##   file_names                               data                             
-##   &lt;chr&gt;                                    &lt;list&gt;                           
-## 1 time_series_covid19_confirmed_global.csv &lt;spec_tbl_df[,471] [275 × 471]&gt;  
-## 2 time_series_covid19_deaths_global.csv    &lt;spec_tbl_df[,471] [275 × 471]&gt;  
-## 3 time_series_covid19_confirmed_US.csv     &lt;spec_tbl_df[,478] [3,342 × 478]&gt;
-## 4 time_series_covid19_deaths_US.csv        &lt;spec_tbl_df[,479] [3,342 × 479]&gt;</code></pre>
 <ol start="5" style="list-style-type: decimal">
 <li>Add a factor variable to <code>df</code> called <code>&quot;</code>case_type<code>&quot;</code> with the <strong>unique</strong> portions of the file names.</li>
 </ol>
 <pre class="r"><code>df %&gt;%  
-  mutate(case_types = as_factor(str_extract(file_names,&quot;[:alpha:]*_[gU][:alpha:]*&quot;))) -&gt; df
-# check 
-df %&gt;%  
-  select(file_names, case_types)</code></pre>
-<pre><code>## # A tibble: 4 x 2
-##   file_names                               case_types      
-##   &lt;chr&gt;                                    &lt;fct&gt;           
-## 1 time_series_covid19_confirmed_global.csv confirmed_global
-## 2 time_series_covid19_deaths_global.csv    deaths_global   
-## 3 time_series_covid19_confirmed_US.csv     confirmed_US    
-## 4 time_series_covid19_deaths_US.csv        deaths_US</code></pre>
+  mutate(case_types = as_factor(str_extract(file_names,&quot;[:alpha:]*_[gU][:alpha:]*&quot;))) -&gt; df</code></pre>
+<ol start="6" style="list-style-type: decimal">
+<li>Remove any columns other than <code>case_types</code> and <code>data</code> from <code>df</code>.</li>
+</ol>
+<ul>
+<li><code>df</code> should have four observations of two variables.</li>
+</ul>
+<pre class="r"><code>df %&gt;%  
+  select(&quot;case_types&quot;, &quot;data&quot; ) -&gt; df</code></pre>
 </div>
 
 

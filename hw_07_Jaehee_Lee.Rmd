@@ -70,14 +70,12 @@ df <- tibble(
   'time_series_covid19_confirmed_US.csv',
   'time_series_covid19_deaths_US.csv')
 )
-df
 ```
 
 3. Create a variable in the data frame called `url` that puts `url_in` on the front of each file_name to create a complete URL.
 ```{r}
 df %>%  
   mutate(url = str_c(url_in, file_names, sep = '')) -> df
-df
 ```
 
 4. Use `mutate()` with `map()` to create a list column called `data` with each row holding the downloaded data frame for each file name
@@ -85,17 +83,17 @@ df
 ```{r}
 df %>%
   mutate(data = map(url, read_csv)) -> df
-# check 
-df %>%  
-  select(file_names, data)
 ```
 5. Add a factor variable to `df` called `"`case_type`"` with the **unique** portions of the file names.
 ```{r}
 df %>%  
   mutate(case_types = as_factor(str_extract(file_names,"[:alpha:]*_[gU][:alpha:]*"))) -> df
-# check 
+```
+6. Remove any columns other than `case_types` and `data` from `df`.
+- `df` should have four observations of two variables.
+```{r}
 df %>%  
-  select(file_names, case_types)
+  select("case_types", "data" ) -> df
 ```
 
 
