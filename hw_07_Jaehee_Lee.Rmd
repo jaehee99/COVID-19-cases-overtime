@@ -243,13 +243,20 @@ setdiff(a,b)
 ```
 
 1.c. Identify the countries in the population data that are not in the covid data. How many are there? 
-
+```{r}
+a <- unique(df_all$Country_Region)
+b <- unique(df_pop$Location)
+length(a)  < length(b)
+```
+There is 0 country in the population data that are not in the covid data. 
 
 1.d. What is the percentage of the world population contained in these countries? 
-
   - Since the percentage is small, we will remove them from the subsequent analysis.
-
-
+```{r}
+total_population <- sum(df_pop$PopTotal)
+df_pop %>%  
+  mutate(percen_world_pop = PopTotal/ total_population) -> df_pop
+```
 
 2. Use a dplyr join to remove all Locations that are not in the `df_all` data frame.
 
