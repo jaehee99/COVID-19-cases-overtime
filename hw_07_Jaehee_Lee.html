@@ -548,8 +548,11 @@ length(a)  &lt; length(b)</code></pre>
 df_pop %&gt;%  
   mutate(percen_world_pop = PopTotal/ total_population) -&gt; df_pop</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li><p>Use a dplyr join to remove all Locations that are not in the <code>df_all</code> data frame.</p></li>
-<li><p>Use a dplyr function to add the ranks for each location for population and population density to <code>df_pop</code> where the country with the largest value is number 1 for that variables. Show the top 10 countries for Population and for population density.</p></li>
+<li>Use a dplyr join to remove all Locations that are not in the <code>df_all</code> data frame.</li>
+</ol>
+<pre class="r"><code>semi_join(df_pop, df_all, by = c(&quot;Location&quot; = &quot;Country_Region&quot;)) -&gt; df_pop</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Use a dplyr function to add the ranks for each location for population and population density to <code>df_pop</code> where the country with the largest value is number 1 for that variables. Show the top 10 countries for Population and for population density.</li>
 </ol>
 <ul>
 <li>Calculate the ranks using a method where if <code>n</code> countries are tied at the same rank, the next rank is <code>n</code> greater than the rank with if the ties. As an example, if two countries are tied at 2, the next non-tied country has rank 4.</li>

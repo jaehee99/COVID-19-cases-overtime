@@ -259,7 +259,9 @@ df_pop %>%
 ```
 
 2. Use a dplyr join to remove all Locations that are not in the `df_all` data frame.
-
+```{r}
+semi_join(df_pop, df_all, by = c("Location" = "Country_Region")) -> df_pop
+```
 
 3. Use a dplyr function to add the ranks for each location for population and population density to `df_pop` where the country with the largest value is number 1 for that variables. Show the top 10 countries for Population and for population density.
   + Calculate the ranks using a method where if `n` countries are tied at the same rank, the next rank is `n` greater than the rank with if the ties. As an example, if two countries are tied at 2, the next non-tied country has rank 4.
