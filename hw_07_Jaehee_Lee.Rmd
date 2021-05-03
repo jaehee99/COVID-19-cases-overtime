@@ -278,7 +278,17 @@ df_pop %>%
 ```
 
 4. Create an appropriate plot and then test to assess if there is a linear relationship between ranks for Total Population and Population Density. Interpret the plot and interpret the output from the model in terms of `$p$` value and adjusted R-squared.
+```{r}
+ggplot(df_pop, aes(x = rank_p, y = rank_d))+
+  geom_point()+
+  geom_smooth(method = "lm",
+                    se = F,
+                    color = "blue")
 
+lmout <-lm(rank_p ~ rank_d, data = df_pop)
+summary(lmout)
+```
+Interpretation: We can see that the blue linear line is very close to horizontal to x- axis. What this indicates is that there is no relationship between rank_p and rank_d. Since p value is 0.4744 which is bigger than 0.05, means this is not statistically significant. Furthermore, adjusted r-squared appears to be negative. "Because R-square is defined as the proportion of variance explained by the fit, if the fit is actually worse than just fitting a horizontal line then R-square is negative."
 
 
 # Add Population Data to `df_all`
