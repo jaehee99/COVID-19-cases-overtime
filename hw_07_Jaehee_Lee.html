@@ -178,6 +178,7 @@ pre code {
 <li><a href="#clean-data"><span class="toc-section-number">2</span> Clean Data</a></li>
 <li><a href="#tidy-each-dataframe"><span class="toc-section-number">3</span> Tidy each dataframe</a></li>
 <li><a href="#add-continents"><span class="toc-section-number">4</span> Add Continents</a></li>
+<li><a href="#fix-nas-for-continents"><span class="toc-section-number">5</span> Fix NAs for Continents</a></li>
 </ul>
 </div>
 
@@ -452,6 +453,34 @@ df_long %&gt;%
 <pre><code>## Warning in countrycode(Country_Region, origin = &quot;country.name&quot;, destination = &quot;continent&quot;): Some values were not matched unambiguously: Diamond Princess, Kosovo, Micronesia, MS Zaandam
 
 ## Warning in countrycode(Country_Region, origin = &quot;country.name&quot;, destination = &quot;continent&quot;): Some values were not matched unambiguously: Diamond Princess, Kosovo, Micronesia, MS Zaandam</code></pre>
+</div>
+<div id="fix-nas-for-continents" class="section level1" number="5">
+<h1 number="5"><span class="header-section-number">5</span> Fix NAs for Continents</h1>
+<ul>
+<li>Use <code>map()</code> with <code>case_when()</code> to replace the NAs due to “Diamond Princess”, “Kosovo”, “MS Zaandam” and Micronesia, with the most appropriate continent</li>
+</ul>
+<pre class="r"><code>df_long %&gt;%
+  mutate(data = map(data, ~ mutate(., Continent = case_when(
+    Country_Region == &quot;Diamond Princess&quot; ~ &quot;Asia&quot;,
+    Country_Region == &quot;Kosovo&quot; ~ &quot;Americas&quot;,
+    Country_Region == &quot;MS Zaandam&quot; ~ &quot;Europe&quot;,
+    Country_Region == &quot;Micronesia&quot; ~ &quot;Oceania&quot;, 
+    TRUE ~ Continent))))  -&gt; df_long</code></pre>
+<ul>
+<li>Use <code>map()</code> with <code>unique()</code> to confirm five continents in the global data frames and one in the US data frames</li>
+</ul>
+<pre class="r"><code>map(df_long$data, ~unique(.  $Continent))</code></pre>
+<pre><code>## [[1]]
+## [1] &quot;Asia&quot;     &quot;Europe&quot;   &quot;Africa&quot;   &quot;Americas&quot; &quot;Oceania&quot; 
+## 
+## [[2]]
+## [1] &quot;Asia&quot;     &quot;Europe&quot;   &quot;Africa&quot;   &quot;Americas&quot; &quot;Oceania&quot; 
+## 
+## [[3]]
+## [1] &quot;Americas&quot;
+## 
+## [[4]]
+## [1] &quot;Americas&quot;</code></pre>
 </div>
 
 

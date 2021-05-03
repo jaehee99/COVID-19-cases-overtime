@@ -185,3 +185,19 @@ df_long %>%
 
 ```
 
+# Fix NAs for Continents
+- Use `map()` with `case_when()` to replace the NAs due to "Diamond Princess", "Kosovo", "MS Zaandam" and Micronesia, with the most appropriate continent
+```{r}
+df_long %>%
+  mutate(data = map(data, ~ mutate(., Continent = case_when(
+    Country_Region == "Diamond Princess" ~ "Asia",
+    Country_Region == "Kosovo" ~ "Americas",
+    Country_Region == "MS Zaandam" ~ "Europe",
+    Country_Region == "Micronesia" ~ "Oceania", 
+    TRUE ~ Continent))))  -> df_long
+```
+
+- Use `map()` with `unique()` to confirm five continents in the global data frames and one in the US data frames
+```{r}
+map(df_long$data, ~unique(.  $Continent))
+```
