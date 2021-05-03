@@ -557,6 +557,40 @@ df_pop %&gt;%
 <ul>
 <li>Calculate the ranks using a method where if <code>n</code> countries are tied at the same rank, the next rank is <code>n</code> greater than the rank with if the ties. As an example, if two countries are tied at 2, the next non-tied country has rank 4.</li>
 </ul>
+<pre class="r"><code>df_pop %&gt;% 
+  mutate(rank_p = rank(-PopTotal, na.last = TRUE),
+         rank_d = rank(-PopDensity, na.last = TRUE),
+         PopTotal = (PopTotal*1000)) -&gt; df_pop
+df_pop %&gt;% 
+  slice_min(rank_p, n = 10)</code></pre>
+<pre><code>## # A tibble: 10 x 7
+##    LocID Location     PopTotal PopDensity percen_world_pop rank_p rank_d
+##    &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt;      &lt;dbl&gt;            &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+##  1   156 China      1433783692     153.             0.186       1     56
+##  2   356 India      1366417756     460.             0.177       2     17
+##  3   840 US          329064917      36.0            0.0427      3    141
+##  4   360 Indonesia   270625567     149.             0.0351      4     57
+##  5   586 Pakistan    216565317     281.             0.0281      5     32
+##  6    76 Brazil      211049519      25.3            0.0274      6    151
+##  7   566 Nigeria     200963603     221.             0.0261      7     46
+##  8    50 Bangladesh  163046173    1253.             0.0211      8      7
+##  9   643 Russia      145872260       8.91           0.0189      9    176
+## 10   484 Mexico      127575529      65.6            0.0165     10    115</code></pre>
+<pre class="r"><code>df_pop %&gt;%  
+  slice_min(rank_d, n = 10)</code></pre>
+<pre><code>## # A tibble: 10 x 7
+##    LocID Location            PopTotal PopDensity percen_world_pop rank_p rank_d
+##    &lt;dbl&gt; &lt;chr&gt;                  &lt;dbl&gt;      &lt;dbl&gt;            &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+##  1   492 Monaco                 38967     26152.      0.00000505     186      1
+##  2   702 Singapore            5804343      8292.      0.000752       111      2
+##  3    48 Bahrain              1641164      2159.      0.000213       148      3
+##  4   336 Holy See                 815      1852.      0.000000106    189      4
+##  5   462 Maldives              530957      1770.      0.0000688      166      5
+##  6   470 Malta                 440377      1376.      0.0000571      167      6
+##  7    50 Bangladesh         163046173      1253.      0.0211           8      7
+##  8   275 West Bank and Gaza   4981422       827.      0.000646       118      8
+##  9   158 Taiwan*             23773881       671.      0.00308         55      9
+## 10   422 Lebanon              6855709       670.      0.000889       106     10</code></pre>
 <ol start="4" style="list-style-type: decimal">
 <li>Create an appropriate plot and then test to assess if there is a linear relationship between ranks for Total Population and Population Density. Interpret the plot and interpret the output from the model in terms of <code>$p$</code> value and adjusted R-squared.</li>
 </ol>
