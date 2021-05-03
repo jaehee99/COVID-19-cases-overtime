@@ -170,3 +170,18 @@ df_long <- df
 map(df_long$data, ~ pivot_longer(., cols = -c("County", "Province_State", "Country_Region", "Lat", "Long", "Population", "Country_State"), names_to = "Date", values_to = "cases", names_transform = list(Date=mdy)) ) -> df_long$data
 ```
 
+# Add Continents 
+1.  Use `map()` to add a new variable called `Continent` to each data frame.  
+- Hint: use the package {countrycode} to get the continents.
+- If you don't have it already, use the console to install. 
+- Then load package {countrycode} and look at help for `countrycode::countrycode`
+- You will get some warning messages about NAs which you will fix next.
+```{r}
+library(countrycode)
+df_long %>%
+  mutate(data = map(data, ~mutate(., Continent = countrycode(Country_Region,
+                                               origin = "country.name",
+                                               destination = "continent")))) -> df_long
+
+```
+

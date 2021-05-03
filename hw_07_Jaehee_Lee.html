@@ -177,6 +177,7 @@ pre code {
 <li><a href="#load-global-and-us-confirmed-cases-and-deaths-data-into-a-nested-data-frame"><span class="toc-section-number">1</span> Load global and US confirmed cases and deaths data into a nested data frame</a></li>
 <li><a href="#clean-data"><span class="toc-section-number">2</span> Clean Data</a></li>
 <li><a href="#tidy-each-dataframe"><span class="toc-section-number">3</span> Tidy each dataframe</a></li>
+<li><a href="#add-continents"><span class="toc-section-number">4</span> Add Continents</a></li>
 </ul>
 </div>
 
@@ -430,6 +431,27 @@ df$vars</code></pre>
 df_long &lt;- df
 
 map(df_long$data, ~ pivot_longer(., cols = -c(&quot;County&quot;, &quot;Province_State&quot;, &quot;Country_Region&quot;, &quot;Lat&quot;, &quot;Long&quot;, &quot;Population&quot;, &quot;Country_State&quot;), names_to = &quot;Date&quot;, values_to = &quot;cases&quot;, names_transform = list(Date=mdy)) ) -&gt; df_long$data</code></pre>
+</div>
+<div id="add-continents" class="section level1" number="4">
+<h1 number="4"><span class="header-section-number">4</span> Add Continents</h1>
+<ol style="list-style-type: decimal">
+<li>Use <code>map()</code> to add a new variable called <code>Continent</code> to each data frame.<br />
+</li>
+</ol>
+<ul>
+<li>Hint: use the package {countrycode} to get the continents.</li>
+<li>If you don’t have it already, use the console to install.</li>
+<li>Then load package {countrycode} and look at help for <code>countrycode::countrycode</code></li>
+<li>You will get some warning messages about NAs which you will fix next.</li>
+</ul>
+<pre class="r"><code>library(countrycode)
+df_long %&gt;%
+  mutate(data = map(data, ~mutate(., Continent = countrycode(Country_Region,
+                                               origin = &quot;country.name&quot;,
+                                               destination = &quot;continent&quot;)))) -&gt; df_long</code></pre>
+<pre><code>## Warning in countrycode(Country_Region, origin = &quot;country.name&quot;, destination = &quot;continent&quot;): Some values were not matched unambiguously: Diamond Princess, Kosovo, Micronesia, MS Zaandam
+
+## Warning in countrycode(Country_Region, origin = &quot;country.name&quot;, destination = &quot;continent&quot;): Some values were not matched unambiguously: Diamond Princess, Kosovo, Micronesia, MS Zaandam</code></pre>
 </div>
 
 
