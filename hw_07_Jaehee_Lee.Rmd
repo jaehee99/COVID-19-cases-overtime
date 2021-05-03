@@ -80,6 +80,13 @@ df %>%
 df
 ```
 
+4. Use `mutate()` with `map()` to create a list column called `data` with each row holding the downloaded data frame for each file name
+
+```{r}
+df %>%
+  mutate(data = map(url, read_csv)) -> df
+df
+```
 
 
 

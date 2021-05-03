@@ -271,6 +271,61 @@ df</code></pre>
 ## 2 time_series_covid19_deaths_g… https://raw.githubusercontent.com/CSSEGISandDat…
 ## 3 time_series_covid19_confirme… https://raw.githubusercontent.com/CSSEGISandDat…
 ## 4 time_series_covid19_deaths_U… https://raw.githubusercontent.com/CSSEGISandDat…</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Use <code>mutate()</code> with <code>map()</code> to create a list column called <code>data</code> with each row holding the downloaded data frame for each file name</li>
+</ol>
+<pre class="r"><code>df %&gt;%
+  mutate(data = map(url, read_csv)) -&gt; df</code></pre>
+<pre><code>## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   .default = col_double(),
+##   `Province/State` = col_character(),
+##   `Country/Region` = col_character()
+## )
+## ℹ Use `spec()` for the full column specifications.
+## 
+## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   .default = col_double(),
+##   `Province/State` = col_character(),
+##   `Country/Region` = col_character()
+## )
+## ℹ Use `spec()` for the full column specifications.</code></pre>
+<pre><code>## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   .default = col_double(),
+##   iso2 = col_character(),
+##   iso3 = col_character(),
+##   Admin2 = col_character(),
+##   Province_State = col_character(),
+##   Country_Region = col_character(),
+##   Combined_Key = col_character()
+## )
+## ℹ Use `spec()` for the full column specifications.
+## 
+## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   .default = col_double(),
+##   iso2 = col_character(),
+##   iso3 = col_character(),
+##   Admin2 = col_character(),
+##   Province_State = col_character(),
+##   Country_Region = col_character(),
+##   Combined_Key = col_character()
+## )
+## ℹ Use `spec()` for the full column specifications.</code></pre>
+<pre class="r"><code>df</code></pre>
+<pre><code>## # A tibble: 4 x 3
+##   file_names              url                                   data            
+##   &lt;chr&gt;                   &lt;chr&gt;                                 &lt;list&gt;          
+## 1 time_series_covid19_co… https://raw.githubusercontent.com/CS… &lt;spec_tbl_df[,4…
+## 2 time_series_covid19_de… https://raw.githubusercontent.com/CS… &lt;spec_tbl_df[,4…
+## 3 time_series_covid19_co… https://raw.githubusercontent.com/CS… &lt;spec_tbl_df[,4…
+## 4 time_series_covid19_de… https://raw.githubusercontent.com/CS… &lt;spec_tbl_df[,4…</code></pre>
 </div>
 
 
