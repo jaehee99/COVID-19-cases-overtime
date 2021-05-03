@@ -368,6 +368,11 @@ df %&gt;%
 </ol>
 <pre class="r"><code>df %&gt;%  
   mutate(data = map_if(data, str_detect(df$case_types, &quot;_US&quot;), ~select(.,-c(&quot;UID&quot;, &quot;iso2&quot;, &quot;iso3&quot;, &quot;code3&quot;, &quot;FIPS&quot;, &quot;Combined_Key&quot;)))) -&gt; df</code></pre>
+<ol start="5" style="list-style-type: lower-alpha">
+<li>Use a purrr function to add variables <code>Population</code> and <code>County</code> to the data frames where missing.</li>
+</ol>
+<pre class="r"><code>map_if(df$data, ~!&#39;Population&#39;%in% colnames(.), ~mutate(. ,Population = 1 )) -&gt; df$data
+map_if(df$data, ~!&#39;County&#39;%in% colnames(.), ~mutate(. ,County = 1 )) -&gt; df$data</code></pre>
 </div>
 
 

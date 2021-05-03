@@ -139,5 +139,11 @@ df %>%
   mutate(data = map_if(data, str_detect(df$case_types, "_US"), ~select(.,-c("UID", "iso2", "iso3", "code3", "FIPS", "Combined_Key")))) -> df
 ```
 
+e. Use a purrr function to add variables `Population` and `County` to the data frames where missing.
+```{r}
+map_if(df$data, ~!'Population'%in% colnames(.), ~mutate(. ,Population = 1 )) -> df$data
+map_if(df$data, ~!'County'%in% colnames(.), ~mutate(. ,County = 1 )) -> df$data
 
+```
+ 
 
