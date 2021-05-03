@@ -363,6 +363,11 @@ df %&gt;%
 <pre class="r"><code>df %&gt;%  
   mutate(data = map(data, ~fix_names(. , &quot;Admin2&quot;, &quot;County&quot; ))) %&gt;%  
   mutate(data = map(data, ~fix_names(. , &quot;Long_&quot;, &quot;Long&quot;) ))-&gt; df</code></pre>
+<ol start="4" style="list-style-type: lower-alpha">
+<li>Use a purrr function to remove the variables “UID”, “iso2”, “iso3”, “code3”, “FIPS”, and “Combined_Key” from only the US data.</li>
+</ol>
+<pre class="r"><code>df %&gt;%  
+  mutate(data = map_if(data, str_detect(df$case_types, &quot;_US&quot;), ~select(.,-c(&quot;UID&quot;, &quot;iso2&quot;, &quot;iso3&quot;, &quot;code3&quot;, &quot;FIPS&quot;, &quot;Combined_Key&quot;)))) -&gt; df</code></pre>
 </div>
 
 

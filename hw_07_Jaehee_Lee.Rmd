@@ -133,5 +133,11 @@ df %>%
   mutate(data = map(data, ~fix_names(. , "Long_", "Long") ))-> df
 ```
 
+d. Use a purrr function to remove the variables "UID", "iso2", "iso3", "code3", "FIPS", and "Combined_Key" from only the US data.
+```{r}
+df %>%  
+  mutate(data = map_if(data, str_detect(df$case_types, "_US"), ~select(.,-c("UID", "iso2", "iso3", "code3", "FIPS", "Combined_Key")))) -> df
+```
+
 
 
