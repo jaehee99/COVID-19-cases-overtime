@@ -373,6 +373,10 @@ df %&gt;%
 </ol>
 <pre class="r"><code>map_if(df$data, ~!&#39;Population&#39;%in% colnames(.), ~mutate(. ,Population = 1 )) -&gt; df$data
 map_if(df$data, ~!&#39;County&#39;%in% colnames(.), ~mutate(. ,County = 1 )) -&gt; df$data</code></pre>
+<ol start="6" style="list-style-type: lower-alpha">
+<li>Use a purrr function to add variable called <code>Country_State</code> that combines the country with the province/state while keeping the original columns.</li>
+</ol>
+<pre class="r"><code>map(df$data, ~ mutate(., Country_State = str_c(.$Province_State, .$Country_Region, sep = &quot;_&quot;))) -&gt; df$data</code></pre>
 </div>
 
 
