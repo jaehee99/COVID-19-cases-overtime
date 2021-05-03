@@ -633,6 +633,25 @@ summary(lmout)</code></pre>
 <li><code>PopTotal</code> for the country level</li>
 </ul></li>
 </ul>
+<pre class="r"><code>df_all %&gt;%
+  inner_join(df_pop, by = c(&quot;Country_Region&quot; = &quot;Location&quot;)) -&gt; df_allp
+df_allp</code></pre>
+<pre><code>## # A tibble: 3,375,476 x 17
+##    case_types       Province_State Country_Region   Lat  Long Population County
+##    &lt;fct&gt;            &lt;chr&gt;          &lt;chr&gt;          &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt; 
+##  1 confirmed_global &lt;NA&gt;           Afghanistan     33.9  67.7          1 1     
+##  2 confirmed_global &lt;NA&gt;           Afghanistan     33.9  67.7          1 1     
+##  3 confirmed_global &lt;NA&gt;           Afghanistan     33.9  67.7          1 1     
+##  4 confirmed_global &lt;NA&gt;           Afghanistan     33.9  67.7          1 1     
+##  5 confirmed_global &lt;NA&gt;           Afghanistan     33.9  67.7          1 1     
+##  6 confirmed_global &lt;NA&gt;           Afghanistan     33.9  67.7          1 1     
+##  7 confirmed_global &lt;NA&gt;           Afghanistan     33.9  67.7          1 1     
+##  8 confirmed_global &lt;NA&gt;           Afghanistan     33.9  67.7          1 1     
+##  9 confirmed_global &lt;NA&gt;           Afghanistan     33.9  67.7          1 1     
+## 10 confirmed_global &lt;NA&gt;           Afghanistan     33.9  67.7          1 1     
+## # … with 3,375,466 more rows, and 10 more variables: Country_State &lt;chr&gt;,
+## #   Date &lt;date&gt;, cases &lt;dbl&gt;, Continent &lt;chr&gt;, LocID &lt;dbl&gt;, PopTotal &lt;dbl&gt;,
+## #   PopDensity &lt;dbl&gt;, percen_world_pop &lt;dbl&gt;, rank_p &lt;dbl&gt;, rank_d &lt;dbl&gt;</code></pre>
 </div>
 <div id="how-many-country-regions-have-multiple-country-states" class="section level1" number="9">
 <h1 number="9"><span class="header-section-number">9</span> How many Country Regions have Multiple Country States?</h1>

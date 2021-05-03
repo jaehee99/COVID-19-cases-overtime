@@ -296,6 +296,11 @@ Interpretation: We can see that the blue linear line is very close to horizontal
 - This means there will be two columns with population data:
   + `Population` for US Counties
   + `PopTotal` for the country level
+```{r}
+df_all %>%
+  inner_join(df_pop, by = c("Country_Region" = "Location")) -> df_allp
+df_allp
+```
 
 
 # How many Country Regions have Multiple Country States?
