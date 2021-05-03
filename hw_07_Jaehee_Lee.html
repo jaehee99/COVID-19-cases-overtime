@@ -11,7 +11,7 @@
 
 <meta name="author" content="Jaehee Lee" />
 
-<meta name="date" content="2021-05-03" />
+<meta name="date" content="2021-05-04" />
 
 <title>STAT 413/613: HW on List Columns and COVID19</title>
 
@@ -167,7 +167,7 @@ pre code {
 
 <h1 class="title toc-ignore">STAT 413/613: HW on List Columns and COVID19</h1>
 <h4 class="author">Jaehee Lee</h4>
-<h4 class="date">2021-05-03</h4>
+<h4 class="date">2021-05-04</h4>
 
 </div>
 
@@ -180,6 +180,13 @@ pre code {
 <li><a href="#add-continents"><span class="toc-section-number">4</span> Add Continents</a></li>
 <li><a href="#fix-nas-for-continents"><span class="toc-section-number">5</span> Fix NAs for Continents</a></li>
 <li><a href="#unnest-the-data-frames"><span class="toc-section-number">6</span> Unnest the Data Frames</a></li>
+<li><a href="#get-world-population-data"><span class="toc-section-number">7</span> Get World Population Data</a></li>
+<li><a href="#add-population-data-to-df_all"><span class="toc-section-number">8</span> Add Population Data to <code>df_all</code></a></li>
+<li><a href="#how-many-country-regions-have-multiple-country-states"><span class="toc-section-number">9</span> How many Country Regions have Multiple Country States?</a></li>
+<li><a href="#analyse-data"><span class="toc-section-number">10</span> Analyse Data</a></li>
+<li><a href="#which-countries-in-the-top-20-for-percentage-of-population-for-cases-are-not-in-the-top-20-for-the-absolute-number-of-cases.-which-countries-in-the-top-20-for-percentage-of-population-for-deaths-are-not-in-the-top-20-for-the-absolute-number-deaths"><span class="toc-section-number">11</span> Which countries in the top 20 for percentage of population for cases are Not in the top 20 for the absolute number of cases. Which countries in the top 20 for percentage of population for deaths are Not in the top 20 for the absolute number deaths?</a></li>
+<li><a href="#create-two-plots-one-for-the-number-of-cases-and-one-for-the-number-of-deaths-over-time-for-the-top-20-countryregion-showing-each-country-and-faceting-by-continent-with-the-same-scale-for-the-y-axis."><span class="toc-section-number">12</span> Create two plots, one for the number of cases and one for the number of deaths over time for the top 20 country/region showing each country and faceting by continent with the same scale for the y axis.</a></li>
+<li><a href="#analyze-us-states-deaths-extra-credit"><span class="toc-section-number">13</span> Analyze US States Deaths <strong>Extra Credit</strong></a></li>
 </ul>
 </div>
 
@@ -505,6 +512,100 @@ df_long %&gt;%
 </ol>
 <pre class="r"><code>df_all %&gt;%
   select(-vars) -&gt; df_all</code></pre>
+</div>
+<div id="get-world-population-data" class="section level1" number="7">
+<h1 number="7"><span class="header-section-number">7</span> Get World Population Data</h1>
+<p>1.a. Use a readr function and relative path to read in the .csv with World population data for 2019 into its own data frame called <code>df_pop</code>.</p>
+<ul>
+<li>The data is from the <a href="https://population.un.org/wpp/Download/Standard/CSV/">UN</a> which uses different country names in many cases from the COVID data. It also uses a different structure for separating countries and territories.<br />
+</li>
+<li>The CSV has been adjusted to match the COVID data country names in many cases, e.g., US, and Iran.<br />
+</li>
+<li>Note: the UN population data is in thousands so it can have fractional values.</li>
+</ul>
+<pre class="r"><code>df_pop &lt;- read_csv(&quot;data/WPP2019_TotalPopulation.csv&quot;)</code></pre>
+<pre><code>## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   LocID = col_double(),
+##   Location = col_character(),
+##   PopTotal = col_double(),
+##   PopDensity = col_double()
+## )</code></pre>
+<p>1.b. Identify the countries in the Covid data that are not in the population data.</p>
+<pre class="r"><code>a &lt;- unique(df_all$Country_Region)
+b &lt;- unique(df_pop$Location)
+setdiff(a,b)</code></pre>
+<pre><code>## [1] &quot;Diamond Princess&quot; &quot;Kosovo&quot;           &quot;MS Zaandam&quot;</code></pre>
+<p>1.c. Identify the countries in the population data that are not in the covid data. How many are there?</p>
+<p>1.d. What is the percentage of the world population contained in these countries?</p>
+<ul>
+<li>Since the percentage is small, we will remove them from the subsequent analysis.</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li><p>Use a dplyr join to remove all Locations that are not in the <code>df_all</code> data frame.</p></li>
+<li><p>Use a dplyr function to add the ranks for each location for population and population density to <code>df_pop</code> where the country with the largest value is number 1 for that variables. Show the top 10 countries for Population and for population density.</p></li>
+</ol>
+<ul>
+<li>Calculate the ranks using a method where if <code>n</code> countries are tied at the same rank, the next rank is <code>n</code> greater than the rank with if the ties. As an example, if two countries are tied at 2, the next non-tied country has rank 4.</li>
+</ul>
+<ol start="4" style="list-style-type: decimal">
+<li>Create an appropriate plot and then test to assess if there is a linear relationship between ranks for Total Population and Population Density. Interpret the plot and interpret the output from the model in terms of <code>$p$</code> value and adjusted R-squared.</li>
+</ol>
+</div>
+<div id="add-population-data-to-df_all" class="section level1" number="8">
+<h1 number="8"><span class="header-section-number">8</span> Add Population Data to <code>df_all</code></h1>
+<ul>
+<li>Use a dplyr join to add the data from <code>df_pop</code> to <code>df_all</code> to create <code>df_allp</code></li>
+<li>This means there will be two columns with population data:
+<ul>
+<li><code>Population</code> for US Counties</li>
+<li><code>PopTotal</code> for the country level</li>
+</ul></li>
+</ul>
+</div>
+<div id="how-many-country-regions-have-multiple-country-states" class="section level1" number="9">
+<h1 number="9"><span class="header-section-number">9</span> How many Country Regions have Multiple Country States?</h1>
+<ul>
+<li>Calculate the number of Country States for each Country Region</li>
+<li>Show in descending order of the number of Country_States by Country_Region.</li>
+</ul>
+</div>
+<div id="analyse-data" class="section level1" number="10">
+<h1 number="10"><span class="header-section-number">10</span> Analyse Data</h1>
+<ol style="list-style-type: decimal">
+<li>Create a data frame by with data grouped by <code>Country_Region</code>, <code>Continent</code> <code>case_type</code>, <code>rank_p</code> and <code>rank_d</code> that summarizes the current totals and the totals as a percentage of total population.</li>
+</ol>
+<ul>
+<li>Be sure to look at how the data is reported so the numbers make sense.</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>What are the 20 Countries with the most confirmed cases and what is the percentage of their total population affected?</li>
+<li>What are the 20 Countries with the most deaths and what is the percentage of their total population affected?</li>
+<li>Describe the results based on the totals with the rankings for total population and population density.</li>
+</ol>
+</div>
+<div id="which-countries-in-the-top-20-for-percentage-of-population-for-cases-are-not-in-the-top-20-for-the-absolute-number-of-cases.-which-countries-in-the-top-20-for-percentage-of-population-for-deaths-are-not-in-the-top-20-for-the-absolute-number-deaths" class="section level1" number="11">
+<h1 number="11"><span class="header-section-number">11</span> Which countries in the top 20 for percentage of population for cases are Not in the top 20 for the absolute number of cases. Which countries in the top 20 for percentage of population for deaths are Not in the top 20 for the absolute number deaths?</h1>
+<ul>
+<li>Describe the results based on the per population results with the rankings for total population and population density.</li>
+</ul>
+</div>
+<div id="create-two-plots-one-for-the-number-of-cases-and-one-for-the-number-of-deaths-over-time-for-the-top-20-countryregion-showing-each-country-and-faceting-by-continent-with-the-same-scale-for-the-y-axis." class="section level1" number="12">
+<h1 number="12"><span class="header-section-number">12</span> Create two plots, one for the number of cases and one for the number of deaths over time for the top 20 country/region showing each country and faceting by continent with the same scale for the y axis.</h1>
+<ul>
+<li>Use appropriate scales for the axes.</li>
+<li>Create two sets of plots</li>
+<li>Interpret each plot with respect to the total cases/deaths and the path of cases/deaths across different continents.</li>
+</ul>
+</div>
+<div id="analyze-us-states-deaths-extra-credit" class="section level1" number="13">
+<h1 number="13"><span class="header-section-number">13</span> Analyze US States Deaths <strong>Extra Credit</strong></h1>
+<ol style="list-style-type: decimal">
+<li>Create a data frame with the total deaths and deaths per population for those US states with more than 0 deaths and more than 0 population.</li>
+<li>Use an appropriate plot to assess for a linear relationship between total deaths and deaths per population using log scales for x and y axes. Interpret the plot.</li>
+<li>Run a linear model to test for a linear relationship and interpret the results in terms of p value, adjusted R-squared and a plot of the residuals.</li>
+</ol>
 </div>
 
 
