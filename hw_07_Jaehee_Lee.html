@@ -346,11 +346,17 @@ df %&gt;%
 <pre class="r"><code>fix_names &lt;- function(dataframe, string_pattern, replacement_pattern) {
   stopifnot(is.data.frame(dataframe))
   stopifnot(is.character(string_pattern))
+  stopifnot(is.character(replacement_pattern))
   
   names(dataframe) = str_replace_all(names(dataframe), string_pattern, replacement_pattern)
   
   return(dataframe)
 }</code></pre>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Use your function with <code>map()</code> to convert “Province/State” and “Country/Region” to “Province_State” “Country_Region” .</li>
+</ol>
+<pre class="r"><code>df %&gt;%  
+  mutate(data = map(data, ~fix_names(. , &quot;([ey])/&quot;, &quot;\\1_&quot;))) -&gt; df</code></pre>
 </div>
 
 

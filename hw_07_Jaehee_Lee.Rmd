@@ -111,6 +111,7 @@ a. Create a short helper function called `fix_names()` which takes three argumen
 fix_names <- function(dataframe, string_pattern, replacement_pattern) {
   stopifnot(is.data.frame(dataframe))
   stopifnot(is.character(string_pattern))
+  stopifnot(is.character(replacement_pattern))
   
   names(dataframe) = str_replace_all(names(dataframe), string_pattern, replacement_pattern)
   
@@ -118,6 +119,11 @@ fix_names <- function(dataframe, string_pattern, replacement_pattern) {
 }
 ```
 
+b. Use your function with `map()` to convert "Province/State" and "Country/Region" to "Province_State" "Country_Region" .
+```{r}
+df %>%  
+  mutate(data = map(data, ~fix_names(. , "([ey])/", "\\1_"))) -> df
+```
 
 
 
