@@ -85,9 +85,18 @@ df
 ```{r}
 df %>%
   mutate(data = map(url, read_csv)) -> df
-df
+# check 
+df %>%  
+  select(file_names, data)
 ```
-
+5. Add a factor variable to `df` called `"`case_type`"` with the **unique** portions of the file names.
+```{r}
+df %>%  
+  mutate(case_types = as_factor(str_extract(file_names,"[:alpha:]*_[gU][:alpha:]*"))) -> df
+# check 
+df %>%  
+  select(file_names, case_types)
+```
 
 
 

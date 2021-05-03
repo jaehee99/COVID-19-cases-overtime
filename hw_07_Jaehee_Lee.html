@@ -318,14 +318,31 @@ df</code></pre>
 ##   Combined_Key = col_character()
 ## )
 ## ℹ Use `spec()` for the full column specifications.</code></pre>
-<pre class="r"><code>df</code></pre>
-<pre><code>## # A tibble: 4 x 3
-##   file_names              url                                   data            
-##   &lt;chr&gt;                   &lt;chr&gt;                                 &lt;list&gt;          
-## 1 time_series_covid19_co… https://raw.githubusercontent.com/CS… &lt;spec_tbl_df[,4…
-## 2 time_series_covid19_de… https://raw.githubusercontent.com/CS… &lt;spec_tbl_df[,4…
-## 3 time_series_covid19_co… https://raw.githubusercontent.com/CS… &lt;spec_tbl_df[,4…
-## 4 time_series_covid19_de… https://raw.githubusercontent.com/CS… &lt;spec_tbl_df[,4…</code></pre>
+<pre class="r"><code># check 
+df %&gt;%  
+  select(file_names, data)</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   file_names                               data                             
+##   &lt;chr&gt;                                    &lt;list&gt;                           
+## 1 time_series_covid19_confirmed_global.csv &lt;spec_tbl_df[,471] [275 × 471]&gt;  
+## 2 time_series_covid19_deaths_global.csv    &lt;spec_tbl_df[,471] [275 × 471]&gt;  
+## 3 time_series_covid19_confirmed_US.csv     &lt;spec_tbl_df[,478] [3,342 × 478]&gt;
+## 4 time_series_covid19_deaths_US.csv        &lt;spec_tbl_df[,479] [3,342 × 479]&gt;</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>Add a factor variable to <code>df</code> called <code>&quot;</code>case_type<code>&quot;</code> with the <strong>unique</strong> portions of the file names.</li>
+</ol>
+<pre class="r"><code>df %&gt;%  
+  mutate(case_types = as_factor(str_extract(file_names,&quot;[:alpha:]*_[gU][:alpha:]*&quot;))) -&gt; df
+# check 
+df %&gt;%  
+  select(file_names, case_types)</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   file_names                               case_types      
+##   &lt;chr&gt;                                    &lt;fct&gt;           
+## 1 time_series_covid19_confirmed_global.csv confirmed_global
+## 2 time_series_covid19_deaths_global.csv    deaths_global   
+## 3 time_series_covid19_confirmed_US.csv     confirmed_US    
+## 4 time_series_covid19_deaths_US.csv        deaths_US</code></pre>
 </div>
 
 
