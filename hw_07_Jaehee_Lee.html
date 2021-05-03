@@ -377,6 +377,36 @@ map_if(df$data, ~!&#39;County&#39;%in% colnames(.), ~mutate(. ,County = 1 )) -&g
 <li>Use a purrr function to add variable called <code>Country_State</code> that combines the country with the province/state while keeping the original columns.</li>
 </ol>
 <pre class="r"><code>map(df$data, ~ mutate(., Country_State = str_c(.$Province_State, .$Country_Region, sep = &quot;_&quot;))) -&gt; df$data</code></pre>
+<ol start="7" style="list-style-type: lower-alpha">
+<li>Update the values in <code>df$vars</code> with the new first 15 names and show the values to check for consistency in each pair of rows.</li>
+</ol>
+<pre class="r"><code>df %&gt;%
+  mutate(vars = map(df$data, names)) %&gt;%  
+  mutate(vars = map(df$vars, ~unlist(.)[1:15])) -&gt; df
+df$vars</code></pre>
+<pre><code>## [[1]]
+##  [1] &quot;Province/State&quot; &quot;Country/Region&quot; &quot;Lat&quot;            &quot;Long&quot;          
+##  [5] &quot;1/22/20&quot;        &quot;1/23/20&quot;        &quot;1/24/20&quot;        &quot;1/25/20&quot;       
+##  [9] &quot;1/26/20&quot;        &quot;1/27/20&quot;        &quot;1/28/20&quot;        &quot;1/29/20&quot;       
+## [13] &quot;1/30/20&quot;        &quot;1/31/20&quot;        &quot;2/1/20&quot;        
+## 
+## [[2]]
+##  [1] &quot;Province/State&quot; &quot;Country/Region&quot; &quot;Lat&quot;            &quot;Long&quot;          
+##  [5] &quot;1/22/20&quot;        &quot;1/23/20&quot;        &quot;1/24/20&quot;        &quot;1/25/20&quot;       
+##  [9] &quot;1/26/20&quot;        &quot;1/27/20&quot;        &quot;1/28/20&quot;        &quot;1/29/20&quot;       
+## [13] &quot;1/30/20&quot;        &quot;1/31/20&quot;        &quot;2/1/20&quot;        
+## 
+## [[3]]
+##  [1] &quot;UID&quot;            &quot;iso2&quot;           &quot;iso3&quot;           &quot;code3&quot;         
+##  [5] &quot;FIPS&quot;           &quot;Admin2&quot;         &quot;Province_State&quot; &quot;Country_Region&quot;
+##  [9] &quot;Lat&quot;            &quot;Long_&quot;          &quot;Combined_Key&quot;   &quot;1/22/20&quot;       
+## [13] &quot;1/23/20&quot;        &quot;1/24/20&quot;        &quot;1/25/20&quot;       
+## 
+## [[4]]
+##  [1] &quot;UID&quot;            &quot;iso2&quot;           &quot;iso3&quot;           &quot;code3&quot;         
+##  [5] &quot;FIPS&quot;           &quot;Admin2&quot;         &quot;Province_State&quot; &quot;Country_Region&quot;
+##  [9] &quot;Lat&quot;            &quot;Long_&quot;          &quot;Combined_Key&quot;   &quot;Population&quot;    
+## [13] &quot;1/22/20&quot;        &quot;1/23/20&quot;        &quot;1/24/20&quot;</code></pre>
 </div>
 
 

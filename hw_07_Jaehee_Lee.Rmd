@@ -151,4 +151,11 @@ map_if(df$data, ~!'County'%in% colnames(.), ~mutate(. ,County = 1 )) -> df$data
 map(df$data, ~ mutate(., Country_State = str_c(.$Province_State, .$Country_Region, sep = "_"))) -> df$data
 ```
 
+g. Update the values in `df$vars` with the new first 15 names and show the values to check for consistency in each pair of rows.
+```{r}
+df %>%
+  mutate(vars = map(df$data, names)) %>%  
+  mutate(vars = map(df$vars, ~unlist(.)[1:15])) -> df
+df$vars
+```
 
