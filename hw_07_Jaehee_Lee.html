@@ -179,6 +179,7 @@ pre code {
 <li><a href="#tidy-each-dataframe"><span class="toc-section-number">3</span> Tidy each dataframe</a></li>
 <li><a href="#add-continents"><span class="toc-section-number">4</span> Add Continents</a></li>
 <li><a href="#fix-nas-for-continents"><span class="toc-section-number">5</span> Fix NAs for Continents</a></li>
+<li><a href="#unnest-the-data-frames"><span class="toc-section-number">6</span> Unnest the Data Frames</a></li>
 </ul>
 </div>
 
@@ -481,6 +482,29 @@ df_long %&gt;%
 ## 
 ## [[4]]
 ## [1] &quot;Americas&quot;</code></pre>
+</div>
+<div id="unnest-the-data-frames" class="section level1" number="6">
+<h1 number="6"><span class="header-section-number">6</span> Unnest the Data Frames</h1>
+<ol style="list-style-type: decimal">
+<li>Unnest and ungroup the data frame <code>df_long</code> and save into a new data frame called <code>df_all</code></li>
+</ol>
+<pre class="r"><code>df_long$data[[1]]$County &lt;- as.character(df_long$data[[1]]$County)
+df_long$data[[2]]$County &lt;- as.character(df_long$data[[2]]$County)
+df_long$data[[3]]$County &lt;- as.character(df_long$data[[3]]$County)
+df_long$data[[4]]$County &lt;- as.character(df_long$data[[4]]$County)
+
+df_long %&gt;%
+  unnest(cols = data) %&gt;%
+  ungroup() -&gt; df_all</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Remove original <code>df</code> and <code>df_long</code> dataframes from the environment</li>
+</ol>
+<pre class="r"><code>remove(df, df_long)</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Remove the <code>vars</code> variable from df_all</li>
+</ol>
+<pre class="r"><code>df_all %&gt;%
+  select(-vars) -&gt; df_all</code></pre>
 </div>
 
 

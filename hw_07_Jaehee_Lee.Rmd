@@ -201,3 +201,28 @@ df_long %>%
 ```{r}
 map(df_long$data, ~unique(.  $Continent))
 ```
+# Unnest the Data Frames    
+1. Unnest and ungroup the data frame `df_long` and save into a new data frame called `df_all`
+```{r}
+df_long$data[[1]]$County <- as.character(df_long$data[[1]]$County)
+df_long$data[[2]]$County <- as.character(df_long$data[[2]]$County)
+df_long$data[[3]]$County <- as.character(df_long$data[[3]]$County)
+df_long$data[[4]]$County <- as.character(df_long$data[[4]]$County)
+
+df_long %>%
+  unnest(cols = data) %>%
+  ungroup() -> df_all
+```
+
+2. Remove original `df` and `df_long` dataframes from the environment
+```{r}
+remove(df, df_long)
+```
+
+3. Remove the `vars` variable from df_all
+```{r}
+df_all %>%
+  select(-vars) -> df_all
+```
+
+
