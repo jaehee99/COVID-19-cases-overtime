@@ -358,9 +358,7 @@ countries20_deaths
 ```
 
 4. Describe the results based on the totals with the rankings for total population and population density.
-```{r}
-
-```
+Interpretation: US has the highest confirmed cases and deaths among all countries. Eventhough the rankings for total_population is 3rd ranking and rankings for population density is 141 rankings. 
 
 # Which countries in the top 20 for percentage of population for cases are Not in the top 20 for the absolute number of cases.  Which countries in the top 20 for percentage of population for deaths are Not in the top 20 for the absolute number deaths?
 - Describe the results based on the per population results with the rankings for total population and population density.
