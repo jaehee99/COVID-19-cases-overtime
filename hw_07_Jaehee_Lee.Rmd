@@ -361,6 +361,36 @@ countries20_deaths
 Interpretation: US has the highest confirmed cases and deaths among all countries. Eventhough the rankings for total_population is 3rd ranking and rankings for population density is 141 rankings. 
 
 # Which countries in the top 20 for percentage of population for cases are Not in the top 20 for the absolute number of cases.  Which countries in the top 20 for percentage of population for deaths are Not in the top 20 for the absolute number deaths?
+```{r}
+countries20_confirmed %>%  
+   select(Country_Region) %>%  
+  list()-> confirmed_20
+
+df_with_summarize %>%
+  filter(case_types == "confirmed_global") %>% 
+  arrange(desc(percentage_total_pop)) %>%
+  head(20) %>%  
+  select(Country_Region) %>%  
+  list()-> perc20
+
+setdiff(perc20[[1]], confirmed_20[[1]])
+
+countries20_deaths %>%  
+   select(Country_Region) %>%  
+  list()-> deaths_20
+
+df_with_summarize %>%
+    filter(case_types == "deaths_global") %>% 
+  arrange(desc(percentage_total_pop)) %>%
+  head(20) %>%  
+  select(Country_Region) %>%  
+  list()-> perc_deaths_20
+
+setdiff(deaths_20[[1]], perc_deaths_20[[1]])
+
+
+```
+
 - Describe the results based on the per population results with the rankings for total population and population density.
 
 

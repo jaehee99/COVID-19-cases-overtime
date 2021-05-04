@@ -769,6 +769,64 @@ countries20_deaths</code></pre>
 </div>
 <div id="which-countries-in-the-top-20-for-percentage-of-population-for-cases-are-not-in-the-top-20-for-the-absolute-number-of-cases.-which-countries-in-the-top-20-for-percentage-of-population-for-deaths-are-not-in-the-top-20-for-the-absolute-number-deaths" class="section level1" number="11">
 <h1 number="11"><span class="header-section-number">11</span> Which countries in the top 20 for percentage of population for cases are Not in the top 20 for the absolute number of cases. Which countries in the top 20 for percentage of population for deaths are Not in the top 20 for the absolute number deaths?</h1>
+<pre class="r"><code>countries20_confirmed %&gt;%  
+   select(Country_Region) %&gt;%  
+  list()-&gt; confirmed_20
+
+df_with_summarize %&gt;%
+  filter(case_types == &quot;confirmed_global&quot;) %&gt;% 
+  arrange(desc(percentage_total_pop)) %&gt;%
+  head(20) %&gt;%  
+  select(Country_Region) %&gt;%  
+  list()-&gt; perc20
+
+setdiff(perc20[[1]], confirmed_20[[1]])</code></pre>
+<pre><code>## # A tibble: 17 x 1
+##    Country_Region
+##    &lt;chr&gt;         
+##  1 Andorra       
+##  2 Montenegro    
+##  3 San Marino    
+##  4 Slovenia      
+##  5 Bahrain       
+##  6 Luxembourg    
+##  7 Israel        
+##  8 Sweden        
+##  9 Estonia       
+## 10 Lithuania     
+## 11 Netherlands   
+## 12 Belgium       
+## 13 Panama        
+## 14 Portugal      
+## 15 Croatia       
+## 16 Hungary       
+## 17 Serbia</code></pre>
+<pre class="r"><code>countries20_deaths %&gt;%  
+   select(Country_Region) %&gt;%  
+  list()-&gt; deaths_20
+
+df_with_summarize %&gt;%
+    filter(case_types == &quot;deaths_global&quot;) %&gt;% 
+  arrange(desc(percentage_total_pop)) %&gt;%
+  head(20) %&gt;%  
+  select(Country_Region) %&gt;%  
+  list()-&gt; perc_deaths_20
+
+setdiff(deaths_20[[1]], perc_deaths_20[[1]])</code></pre>
+<pre><code>## # A tibble: 11 x 1
+##    Country_Region
+##    &lt;chr&gt;         
+##  1 India         
+##  2 Russia        
+##  3 France        
+##  4 Germany       
+##  5 Colombia      
+##  6 Iran          
+##  7 Argentina     
+##  8 South Africa  
+##  9 Ukraine       
+## 10 Indonesia     
+## 11 Turkey</code></pre>
 <ul>
 <li>Describe the results based on the per population results with the rankings for total population and population density.</li>
 </ul>
