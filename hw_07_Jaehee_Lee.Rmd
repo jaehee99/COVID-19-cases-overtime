@@ -330,9 +330,37 @@ head(states_region)
 # Analyse Data
 1. Create a data frame by with data grouped by `Country_Region`, `Continent` `case_type`, `rank_p` and `rank_d` that summarizes the current totals and the totals as a percentage of total population.
   - Be sure to look at how the data is reported so the numbers make sense.
+```{r}
+df_allp %>%
+ group_by(Country_Region, Continent, case_types, rank_p, rank_d) %>%
+ summarise(current_totals = max(cases), percentage_total_pop = current_totals/last(PopTotal)*100) %>%
+  ungroup() -> df_with_summarize
+```
+  
 2. What are the 20 Countries with the most confirmed cases and what is the percentage of their total population affected?
+```{r}
+df_with_summarize %>%
+filter(case_types == "confirmed_global") %>%
+arrange(desc(current_totals)) %>%
+  head(20) %>%  
+  select(Country_Region, current_totals, percentage_total_pop, rank_p, rank_d) -> countries20_confirmed
+countries20_confirmed
+```
+
 3. What are the 20 Countries with the most deaths and what is the percentage of their total population affected?
+```{r}
+df_with_summarize %>%
+filter(case_types == "deaths_global") %>%
+  arrange(desc(current_totals)) %>%
+  head(20) %>%  
+  select(Country_Region, current_totals, percentage_total_pop, rank_p, rank_d)-> countries20_deaths
+countries20_deaths
+```
+
 4. Describe the results based on the totals with the rankings for total population and population density.
+```{r}
+
+```
 
 
 

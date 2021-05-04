@@ -695,9 +695,76 @@ head(states_region)</code></pre>
 <ul>
 <li>Be sure to look at how the data is reported so the numbers make sense.</li>
 </ul>
+<pre class="r"><code>df_allp %&gt;%
+ group_by(Country_Region, Continent, case_types, rank_p, rank_d) %&gt;%
+ summarise(current_totals = max(cases), percentage_total_pop = current_totals/last(PopTotal)*100) %&gt;%
+  ungroup() -&gt; df_with_summarize</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;Country_Region&#39;, &#39;Continent&#39;, &#39;case_types&#39;, &#39;rank_p&#39;. You can override using the `.groups` argument.</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>What are the 20 Countries with the most confirmed cases and what is the percentage of their total population affected?</li>
+</ol>
+<pre class="r"><code>df_with_summarize %&gt;%
+filter(case_types == &quot;confirmed_global&quot;) %&gt;%
+arrange(desc(current_totals)) %&gt;%
+  head(20) %&gt;%  
+  select(Country_Region, current_totals, percentage_total_pop, rank_p, rank_d) -&gt; countries20_confirmed
+countries20_confirmed</code></pre>
+<pre><code>## # A tibble: 20 x 5
+##    Country_Region current_totals percentage_total_pop rank_p rank_d
+##    &lt;chr&gt;                   &lt;dbl&gt;                &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+##  1 US                   32421641                9.85       3    141
+##  2 India                19925517                1.46       2     17
+##  3 Brazil               14754910                6.99       6    151
+##  4 France                5605532                8.61      22     68
+##  5 Turkey                4875388                5.84      18     75
+##  6 Russia                4768476                3.27       9    176
+##  7 United Kingdom        4420201                6.55      21     33
+##  8 Italy                 4044762                6.68      23     49
+##  9 Spain                 3524077                7.54      30     88
+## 10 Germany               3432676                4.11      17     37
+## 11 Argentina             3005259                6.71      31    168
+## 12 Colombia              2893655                5.75      29    134
+## 13 Poland                2803233                7.40      38     65
+## 14 Iran                  2534855                3.06      19    127
+## 15 Mexico                2348873                1.84      10    115
+## 16 Ukraine               2137959                4.86      33    104
+## 17 Peru                  1810998                5.57      43    150
+## 18 Indonesia             1677274                0.620      4     57
+## 19 Czechia               1634114               15.3       85     59
+## 20 South Africa          1584064                2.71      24    130</code></pre>
+<ol start="3" style="list-style-type: decimal">
 <li>What are the 20 Countries with the most deaths and what is the percentage of their total population affected?</li>
+</ol>
+<pre class="r"><code>df_with_summarize %&gt;%
+filter(case_types == &quot;deaths_global&quot;) %&gt;%
+  arrange(desc(current_totals)) %&gt;%
+  head(20) %&gt;%  
+  select(Country_Region, current_totals, percentage_total_pop, rank_p, rank_d)-&gt; countries20_deaths
+countries20_deaths</code></pre>
+<pre><code>## # A tibble: 20 x 5
+##    Country_Region current_totals percentage_total_pop rank_p rank_d
+##    &lt;chr&gt;                   &lt;dbl&gt;                &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+##  1 US                     577045               0.175       3    141
+##  2 Brazil                 407639               0.193       6    151
+##  3 India                  218959               0.0160      2     17
+##  4 Mexico                 217233               0.170      10    115
+##  5 United Kingdom         127538               0.189      21     33
+##  6 Italy                  121177               0.200      23     49
+##  7 Russia                 109011               0.0747      9    176
+##  8 France                 104093               0.160      22     68
+##  9 Germany                 83292               0.0997     17     37
+## 10 Spain                   78216               0.167      30     88
+## 11 Colombia                74477               0.148      29    134
+## 12 Iran                    72484               0.0874     19    127
+## 13 Poland                  68068               0.180      38     65
+## 14 Argentina               64252               0.143      31    168
+## 15 Peru                    62126               0.191      43    150
+## 16 South Africa            54417               0.0929     24    130
+## 17 Ukraine                 46447               0.106      33    104
+## 18 Indonesia               45796               0.0169      4     57
+## 19 Turkey                  40844               0.0490     18     75
+## 20 Czechia                 29343               0.275      85     59</code></pre>
+<ol start="4" style="list-style-type: decimal">
 <li>Describe the results based on the totals with the rankings for total population and population density.</li>
 </ol>
 </div>
