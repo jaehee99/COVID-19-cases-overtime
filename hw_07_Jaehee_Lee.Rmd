@@ -305,7 +305,27 @@ df_allp
 
 # How many Country Regions have Multiple Country States?
 - Calculate the number of Country States for each Country Region
+```{r}
+df_allp %>%
+  select(Country_Region, Country_State) %>%
+  distinct() %>%  
+  group_by(Country_Region) %>% 
+  summarise(count = n()) %>%  
+  filter(count> 1) %>%  
+  nrow()
+```
+
 - Show in descending order of the number of Country_States by Country_Region.
+```{r}
+df_allp %>%
+  select(Country_Region, Country_State) %>%
+  distinct() %>%  
+  group_by(Country_Region) %>% 
+  summarise(count = n()) %>%  
+  arrange(desc(count)) -> states_region 
+# check
+head(states_region)
+```
 
 # Analyse Data
 1. Create a data frame by with data grouped by `Country_Region`, `Continent` `case_type`, `rank_p` and `rank_d` that summarizes the current totals and the totals as a percentage of total population.
@@ -317,8 +337,10 @@ df_allp
 
 
 
+
 # Which countries in the top 20 for percentage of population for cases are Not in the top 20 for the absolute number of cases.  Which countries in the top 20 for percentage of population for deaths are Not in the top 20 for the absolute number deaths?
 - Describe the results based on the per population results with the rankings for total population and population density.
+
 
 
 

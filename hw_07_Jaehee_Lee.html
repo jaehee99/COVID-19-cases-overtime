@@ -657,8 +657,35 @@ df_allp</code></pre>
 <h1 number="9"><span class="header-section-number">9</span> How many Country Regions have Multiple Country States?</h1>
 <ul>
 <li>Calculate the number of Country States for each Country Region</li>
+</ul>
+<pre class="r"><code>df_allp %&gt;%
+  select(Country_Region, Country_State) %&gt;%
+  distinct() %&gt;%  
+  group_by(Country_Region) %&gt;% 
+  summarise(count = n()) %&gt;%  
+  filter(count&gt; 1) %&gt;%  
+  nrow()</code></pre>
+<pre><code>## [1] 8</code></pre>
+<ul>
 <li>Show in descending order of the number of Country_States by Country_Region.</li>
 </ul>
+<pre class="r"><code>df_allp %&gt;%
+  select(Country_Region, Country_State) %&gt;%
+  distinct() %&gt;%  
+  group_by(Country_Region) %&gt;% 
+  summarise(count = n()) %&gt;%  
+  arrange(desc(count)) -&gt; states_region 
+# check
+head(states_region)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   Country_Region count
+##   &lt;chr&gt;          &lt;int&gt;
+## 1 US                59
+## 2 China             34
+## 3 Canada            16
+## 4 France            12
+## 5 United Kingdom    12
+## 6 Australia          8</code></pre>
 </div>
 <div id="analyse-data" class="section level1" number="10">
 <h1 number="10"><span class="header-section-number">10</span> Analyse Data</h1>
