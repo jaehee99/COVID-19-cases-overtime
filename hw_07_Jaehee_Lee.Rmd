@@ -362,10 +362,6 @@ countries20_deaths
 
 ```
 
-
-
-
-
 # Which countries in the top 20 for percentage of population for cases are Not in the top 20 for the absolute number of cases.  Which countries in the top 20 for percentage of population for deaths are Not in the top 20 for the absolute number deaths?
 - Describe the results based on the per population results with the rankings for total population and population density.
 
@@ -376,14 +372,33 @@ countries20_deaths
 - Use appropriate scales for the axes.
 - Create two sets of plots
 - Interpret each plot with respect to the total cases/deaths and the path of cases/deaths across different continents.
+```{r}
+confirmed <- countries20_confirmed$Country_Region
+df_allp %>%
+  filter(case_types == "confirmed_global", Country_Region == confirmed) %>%
+  ggplot() +
+  geom_line(aes(x = Date, y = cases, color = Country_Region)) +
+  facet_wrap(~Continent) +
+  scale_y_log10() +
+  theme_bw() +
+  ylab("Cumulative Cases") +
+  ggtitle("The COVID-19 confirmed cases vs Time (Top 20 countries)") +
+  theme(legend.position="bottom",legend.background = element_rect(fill="white",
+                                  size=0.5, linetype="solid"))
 
-
-# Analyze US States Deaths **Extra Credit**
-
-1. Create a data frame with the total deaths and deaths per population for those US states with more than 0 deaths and more than 0 population.
-2. Use an appropriate plot to assess for a linear relationship between total deaths and deaths per population using log scales for x and y axes. Interpret the plot.
-3. Run a linear model to test for a linear relationship and interpret the results in terms of p value, adjusted R-squared and a plot of the residuals.
-
+deaths <- countries20_deaths$Country_Region
+df_allp %>%
+  filter(case_types == "deaths_global", Country_Region == deaths) %>%
+  ggplot() +
+  geom_line(aes(x = Date, y = cases, color = Country_Region)) +
+  facet_wrap(~Continent) +
+  scale_y_log10() +
+  theme_bw() +
+  ylab("Cumulative Cases") +
+  ggtitle("The COVID-19 deaths cases vs Time(Top 20 countries)") +
+    theme(legend.position="bottom", legend.background = element_rect(fill="white",
+                                  size=0.5, linetype="solid"))
+```
 
 
 
