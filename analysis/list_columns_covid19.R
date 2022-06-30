@@ -75,11 +75,8 @@ df_long %>%
     Country_Region == "Micronesia" ~ "Oceania", 
     TRUE ~ Continent))))  -> df_long
 
-# Use `map()` with `unique()` to confirm five continents in the global data frames and one in the US data frames
 map(df_long$data, ~unique(.  $Continent))
 
-# Unnest the Data Frames    
-# Unnest and ungroup the data frame `df_long` and save into a new data frame called `df_all`
 df_long$data[[1]]$County <- as.character(df_long$data[[1]]$County)
 df_long$data[[2]]$County <- as.character(df_long$data[[2]]$County)
 df_long$data[[3]]$County <- as.character(df_long$data[[3]]$County)
@@ -89,44 +86,27 @@ df_long %>%
   unnest(cols = data) %>%
   ungroup() -> df_all
 
-# Remove original `df` and `df_long` dataframes from the environment
 remove(df, df_long)
 
-# Remove the `vars` variable from df_all
 df_all %>%
   select(-vars) -> df_all
 
-# Get World Population Data
-# Use a readr function and relative path to read in the .csv with World population data for 2019 into its own data frame called `df_pop`.  
-# 
-# - The data is from the [UN](https://population.un.org/wpp/Download/Standard/CSV/) which uses different country names in many cases from the COVID data. It also uses a different structure for separating countries and territories.  
-# - The CSV has been adjusted to match the COVID data country names in many cases, e.g., US, and Iran.  
-# - Note: the UN population data is in thousands so it can have fractional values. 
 df_pop <- read_csv("../data/WPP2019_TotalPopulation.csv")
 
-# Identify the countries in the Covid data that are not in the population data.  
 a <- unique(df_all$Country_Region)
 b <- unique(df_pop$Location)
 setdiff(a,b)
 
-# Identify the countries in the population data that are not in the covid data. How many are there? 
 a <- unique(df_all$Country_Region)
 b <- unique(df_pop$Location)
 length(a)  < length(b)
 
-# There is 0 country in the population data that are not in the covid data. 
-
-# What is the percentage of the world population contained in these countries? 
-# - Since the percentage is small, we will remove them from the subsequent analysis.
 total_population <- sum(df_pop$PopTotal)
 df_pop %>%  
   mutate(percen_world_pop = PopTotal/ total_population) -> df_pop
 
-# Use a dplyr join to remove all Locations that are not in the `df_all` data frame.
 semi_join(df_pop, df_all, by = c("Location" = "Country_Region")) -> df_pop
 
-# Use a dplyr function to add the ranks for each location for population and population density to `df_pop` where the country with the largest value is number 1 for that variables. Show the top 10 countries for Population and for population density.
-# + Calculate the ranks using a method where if `n` countries are tied at the same rank, the next rank is `n` greater than the rank with if the ties. As an example, if two countries are tied at 2, the next non-tied country has rank 4.
 df_pop %>% 
   mutate(rank_p = rank(-PopTotal, na.last = TRUE),
          rank_d = rank(-PopDensity, na.last = TRUE),
@@ -136,7 +116,6 @@ df_pop %>%
 df_pop %>%  
   slice_min(rank_d, n = 10)
 
-# Create an appropriate plot and then test to assess if there is a linear relationship between ranks for Total Population and Population Density. Interpret the plot and interpret the output from the model in terms of `$p$` value and adjusted R-squared.
 ggplot(df_pop, aes(x = rank_p, y = rank_d))+
   geom_point()+
   geom_smooth(method = "lm",
@@ -148,19 +127,10 @@ summary(lmout)
 
 # Interpretation: We can see that the blue linear line is very close to horizontal to x- axis. What this indicates is that there is no relationship between rank_p and rank_d. Since p value is 0.4744 which is bigger than 0.05, means this is not statistically significant. Furthermore, adjusted r-squared appears to be negative. "Because R-square is defined as the proportion of variance explained by the fit, if the fit is actually worse than just fitting a horizontal line then R-square is negative."
 
-
-# Add Population Data to `df_all`
-# - Use a dplyr join to add the data from `df_pop` to `df_all` to create `df_allp`
-# - This means there will be two columns with population data:
-# + `Population` for US Counties
-# + `PopTotal` for the country level
-
 df_all %>%
   inner_join(df_pop, by = c("Country_Region" = "Location")) -> df_allp
 df_allp
 
-# How many Country Regions have Multiple Country States?
-# - Calculate the number of Country States for each Country Region
 df_allp %>%
   select(Country_Region, Country_State) %>%
   distinct() %>%  
@@ -169,25 +139,20 @@ df_allp %>%
   filter(count> 1) %>%  
   nrow()
 
-# - Show in descending order of the number of Country_States by Country_Region.
 df_allp %>%
   select(Country_Region, Country_State) %>%
   distinct() %>%  
   group_by(Country_Region) %>% 
   summarise(count = n()) %>%  
   arrange(desc(count)) -> states_region 
-# check
+
 head(states_region)
 
-# Analyse Data
-# 1. Create a data frame by with data grouped by `Country_Region`, `Continent` `case_type`, `rank_p` and `rank_d` that summarizes the current totals and the totals as a percentage of total population.
-# - Be sure to look at how the data is reported so the numbers make sense.
 df_allp %>%
   group_by(Country_Region, Continent, case_types, rank_p, rank_d) %>%
   summarise(current_totals = max(cases), percentage_total_pop = current_totals/last(PopTotal)*100) %>%
   ungroup() -> df_with_summarize
 
-# What are the 20 Countries with the most confirmed cases and what is the percentage of their total population affected?
 df_with_summarize %>%
   filter(case_types == "confirmed_global") %>%
   arrange(desc(current_totals)) %>%
@@ -195,7 +160,6 @@ df_with_summarize %>%
   select(Country_Region, current_totals, percentage_total_pop, rank_p, rank_d) -> countries20_confirmed
 countries20_confirmed
 
-# What are the 20 Countries with the most deaths and what is the percentage of their total population affected?
 df_with_summarize %>%
   filter(case_types == "deaths_global") %>%
   arrange(desc(current_totals)) %>%
@@ -203,10 +167,8 @@ df_with_summarize %>%
   select(Country_Region, current_totals, percentage_total_pop, rank_p, rank_d)-> countries20_deaths
 countries20_deaths
 
-# Describe the results based on the totals with the rankings for total population and population density.
 # Interpretation: US has the highest confirmed cases and deaths among all countries. Eventhough the rankings for total_population is 3rd ranking and rankings for population density is 141 rankings. 
 
-# Which countries in the top 20 for percentage of population for cases are Not in the top 20 for the absolute number of cases.  Which countries in the top 20 for percentage of population for deaths are Not in the top 20 for the absolute number deaths?
 countries20_confirmed %>%  
   select(Country_Region) %>%  
   list()-> confirmed_20
@@ -232,13 +194,6 @@ df_with_summarize %>%
   list()-> perc_deaths_20
 
 setdiff(deaths_20[[1]], perc_deaths_20[[1]])
-
-# Describe the results based on the per population results with the rankings for total population and population density.
-
-# Create two plots, one for the number of cases and one for the number of deaths over time for the top 20 country/region showing each country and faceting by continent with the same scale for the y axis. 
-# - Use appropriate scales for the axes.
-# - Create two sets of plots
-# - Interpret each plot with respect to the total cases/deaths and the path of cases/deaths across different continents.
 
 confirmed <- countries20_confirmed$Country_Region
 df_allp %>%
