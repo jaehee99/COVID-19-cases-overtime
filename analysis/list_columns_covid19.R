@@ -1,51 +1,37 @@
-# Load library
-library(tidyverse)
+library(tidyverse) 
+library(lubridate)
+library(countrycode)
 
-# Load global and US confirmed cases and deaths data into a nested data frame
-# Create a variable called `url_in` to store this URL: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/". This allows you do directly download the files at the John's Hopkins site:  "https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"
 url_in <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/"
 
-# Create a tibble named `df` with a variable called `file_names` with a row for each of the following four file names to be loaded from the URL:
-# time_series_covid19_confirmed_global.csv
-# time_series_covid19_deaths_global.csv
-# time_series_covid19_confirmed_US.csv
-# time_series_covid19_deaths_US.csv
 df <- tibble(
- file_names = 
-   c('time_series_covid19_confirmed_global.csv', 
-  'time_series_covid19_deaths_global.csv',
-  'time_series_covid19_confirmed_US.csv',
-  'time_series_covid19_deaths_US.csv')
+  file_names = 
+    c('time_series_covid19_confirmed_global.csv', 
+      'time_series_covid19_deaths_global.csv',
+      'time_series_covid19_confirmed_US.csv',
+      'time_series_covid19_deaths_US.csv')
 )
 
-# Create a variable in the data frame called `url` that puts `url_in` on the front of each file_name to create a complete URL.
 df %>%  
   mutate(url = str_c(url_in, file_names, sep = '')) -> df
 
-# Use `mutate()` with `map()` to create a list column called `data` with each row holding the downloaded data frame for each file name
 df %>%
   mutate(data = map(url, read_csv)) -> df
 
-# Add a factor variable to `df` called `"`case_type`"` with the **unique** portions of the file names.
 df %>%  
   mutate(case_types = as_factor(str_extract(file_names,"[:alpha:]*_[gU][:alpha:]*"))) -> df
 
-# Remove any columns other than `case_types` and `data` from `df`.
-# `df` should have four observations of two variables.
 df %>%  
   select("case_types", "data" ) -> df
 
-# Clean Data  
-# Using a single call to `map()`, add only the first 15 names from each of the four data frames to a new variable in `df` called `vars`.
-# Visually compare them to identify issues across the rows.
 df %>%  
   mutate(vars = map(df$data, names)) -> df
+
 df %>% 
   mutate(vars = map(df$vars, ~unlist(.)[1:15]))
 
-# Use a purrr function for each of the following steps (except a) to fix any issues and create consistent data frames.  
-# a. Create a short helper function called `fix_names()` which takes three arguments: a data frame, a string pattern, and a string "replacement pattern". It should replace all occurrences of the "string pattern" in the names of the variables in the data frame with the "replacement pattern". Include error checking to ensure the inputs are of the proper class.
 fix_names <- function(dataframe, string_pattern, replacement_pattern) {
+  
   stopifnot(is.data.frame(dataframe))
   stopifnot(is.character(string_pattern))
   stopifnot(is.character(replacement_pattern))
@@ -55,57 +41,32 @@ fix_names <- function(dataframe, string_pattern, replacement_pattern) {
   return(dataframe)
 }
 
-# Use your function with `map()` to convert "Province/State" and "Country/Region" to "Province_State" "Country_Region" .
 df %>%  
   mutate(data = map(data, ~fix_names(. , "([ey])/", "\\1_"))) -> df
 
-# Use your function with `map()` to convert "Admin2 to "County" and "Long_" to "Long".
 df %>%  
   mutate(data = map(data, ~fix_names(. , "Admin2", "County" ))) %>%  
   mutate(data = map(data, ~fix_names(. , "Long_", "Long") ))-> df
 
-# Use a purrr function to remove the variables "UID", "iso2", "iso3", "code3", "FIPS", and "Combined_Key" from only the US data.
 df %>%  
   mutate(data = map_if(data, str_detect(df$case_types, "_US"), ~select(.,-c("UID", "iso2", "iso3", "code3", "FIPS", "Combined_Key")))) -> df
 
-# Use a purrr function to add variables `Population` and `County` to the data frames where missing.
 map_if(df$data, ~!'Population'%in% colnames(.), ~mutate(. ,Population = 1 )) -> df$data
 map_if(df$data, ~!'County'%in% colnames(.), ~mutate(. ,County = 1 )) -> df$data
-
-#  Use a purrr function to add variable called `Country_State` that combines the country with the province/state while keeping the original columns.
 map(df$data, ~ mutate(., Country_State = str_c(.$Province_State, .$Country_Region, sep = "_"))) -> df$data
 
-# Update the values in `df$vars` with the new first 15 names and show the values to check for consistency in each pair of rows.
 df %>%
   mutate(vars = map(df$data, names)) %>%  
   mutate(vars = map(df$vars, ~unlist(.)[1:15])) -> df
-df$vars
 
-# Tidy each dataframe 
-# 1. Use `map()` along with `pivot_longer()` to tidy each data frame.
-# - As part of the pivot, ensure the daily values are in a variable called "`Date`" and use a lubridate function *inside the pivot* to ensure it is of class `date`.
-# 2. Save the new data frame to a variable called `df_long`
-
-library(lubridate)
-# change df to df_long
 df_long <- df
 
 map(df_long$data, ~ pivot_longer(., cols = -c("County", "Province_State", "Country_Region", "Lat", "Long", "Population", "Country_State"), names_to = "Date", values_to = "cases", names_transform = list(Date=mdy)) ) -> df_long$data
 
-# Add Continents 
-# 1.  Use `map()` to add a new variable called `Continent` to each data frame.  
-# - Hint: use the package {countrycode} to get the continents.
-# - If you don't have it already, use the console to install. 
-# - Then load package {countrycode} and look at help for `countrycode::countrycode`
-# - You will get some warning messages about NAs which you will fix next.
-library(countrycode)
 df_long %>%
   mutate(data = map(data, ~mutate(., Continent = countrycode(Country_Region,
                                                              origin = "country.name",
                                                              destination = "continent")))) -> df_long
-
-# Fix NAs for Continents
-# - Use `map()` with `case_when()` to replace the NAs due to "Diamond Princess", "Kosovo", "MS Zaandam" and Micronesia, with the most appropriate continent
 df_long %>%
   mutate(data = map(data, ~ mutate(., Continent = case_when(
     Country_Region == "Diamond Princess" ~ "Asia",
@@ -141,7 +102,7 @@ df_all %>%
 # - The data is from the [UN](https://population.un.org/wpp/Download/Standard/CSV/) which uses different country names in many cases from the COVID data. It also uses a different structure for separating countries and territories.  
 # - The CSV has been adjusted to match the COVID data country names in many cases, e.g., US, and Iran.  
 # - Note: the UN population data is in thousands so it can have fractional values. 
-df_pop <- read_csv("data/WPP2019_TotalPopulation.csv")
+df_pop <- read_csv("../data/WPP2019_TotalPopulation.csv")
 
 # Identify the countries in the Covid data that are not in the population data.  
 a <- unique(df_all$Country_Region)
@@ -304,4 +265,6 @@ df_allp %>%
   ggtitle("The COVID-19 deaths cases vs Time(Top 20 countries)") +
   theme(legend.position="bottom", legend.background = element_rect(fill="white",
                                                                    size=0.5, linetype="solid"))
+
+
 
